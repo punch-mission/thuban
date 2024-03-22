@@ -37,7 +37,7 @@ jobs:
     - name: Test with pytest
       run: |
         pip install .
-        coverage run --branch --source=overlappogram/ -m pytest thuban
+        coverage run --branch --source=thuban/ -m pytest thuban
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
       with:
