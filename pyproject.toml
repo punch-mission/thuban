@@ -1,0 +1,86 @@
+[build-system]
+
+requires = ["setuptools",
+            "wheel"]
+
+[project]
+name = "thuban"
+version = "0.0.1"
+dependencies = ["numpy",
+    "astropy",
+    "matplotlib",
+    "pandas",
+    "ndcube",
+    "sep",
+    "sunpy",
+    "scipy"
+]
+requires-python = ">=3.9"
+authors = [
+    {name = "J. Marcus Hughes", email = "hughes.jmb@gmail.com"},
+]
+maintainers = [
+  {name = "J. Marcus Hughes", email = "hughes.jmb@gmail.com"}
+]
+description = "Fix the pointing of yo"
+readme = "README.md"
+license = {file = "LICENSE.md"}
+keywords = ["thuban", "solar", "physics", "analysis", "astrometry", "astronomy"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python"
+]
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-doctestplus", "pytest-cov", "ruff", "coverage"]
+docs = ["sphinx", "sphinx-autoapi", "sphinx-automodapi", "pydata-sphinx-theme"]
+
+[project.urls]
+Homepage = "https://example.com"
+Documentation = "https://readthedocs.org"
+Repository = "https://github.com/punch-mission/thuban.git"
+"Bug Tracker" = "https://github.com/punch-mission/thuban/issues"
+Changelog = "https://github.com/punch-mission/thuban/blob/main/CHANGELOG.md"
+
+[tool.setuptools]
+packages = ["thuban"]
+
+[tool.codespell]
+skip = "*.fts,*.fits,venv,*.pro,*.asdf,*.ipynb"
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+exclude=[
+    ".git,",
+    "__pycache__",
+    "build",
+    "thuban/version.py",
+]
+show-fixes = true
+
+lint.select = [
+       "E",
+       "F",
+       "W",
+       "UP",
+       "PT",
+       "RET",
+       "TID",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Part of configuration, not a package.
+"setup.py" = ["INP001"]
+"conftest.py" = ["INP001"]
+# implicit-namespace-package. The examples are not a package.
+"docs/*.py" = ["INP001"]
+# Module level imports do not need to be at the top of a file here
+"docs/conf.py" = ["E402"]
+
+"__init__.py" = ["E402", "F401", "F403"]
+"test_*.py" = ["B011", "D", "E402", "PGH001", "S101"]
+
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
