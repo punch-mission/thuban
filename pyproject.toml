@@ -84,3 +84,8 @@ lint.select = [
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: a slow test to normally skip in CI",
+]
