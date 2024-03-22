@@ -1,10 +1,10 @@
+import os
+
 import astropy.units as u
 import numpy as np
 import pandas as pd
 from astropy.coordinates import SkyCoord
 from astropy.wcs import WCS, NoConvergence
-
-from thuban import get_data
 
 __all__ = [
     "HIPPARCOS_URL",
@@ -14,8 +14,12 @@ __all__ = [
     "find_star_coordinates_in_image",
 ]
 
-
+_ROOT = os.path.abspath(os.path.dirname(__file__))
 HIPPARCOS_URL = "https://cdsarc.cds.unistra.fr/ftp/cats/I/239/hip_main.dat"
+
+
+def get_data(path):
+    return os.path.join(_ROOT, "data", path)
 
 
 def load_hipparcos_catalog(catalog_path: str = get_data("reduced_hip.csv")) -> pd.DataFrame:
