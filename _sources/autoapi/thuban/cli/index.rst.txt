@@ -1,0 +1,34 @@
+:py:mod:`thuban.cli`
+====================
+
+.. py:module:: thuban.cli
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   thuban.cli._flatten_list
+   thuban.cli.get_files
+   thuban.cli.open_files
+   thuban.cli.determine_pointing_and_distortion
+
+
+
+.. py:function:: _flatten_list(xss)
+
+
+.. py:function:: get_files(directory: pathlib.Path, valid_extensions=('fits', 'fts')) -> [pathlib.Path]
+
+
+.. py:function:: open_files(paths: [pathlib.Path], byte_swap=True) -> (numpy.ndarray, [astropy.io.fits.Header])
+
+
+.. py:function:: determine_pointing_and_distortion(directory, byte_swap=True, magnitude=8.0, limit=1.0, num_bins=75, iterations=5, workers=16, background=16, threshold=5.0, skip_distortion=False)
+
+

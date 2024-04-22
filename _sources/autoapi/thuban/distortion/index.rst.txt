@@ -1,0 +1,87 @@
+:py:mod:`thuban.distortion`
+===========================
+
+.. py:module:: thuban.distortion
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   thuban.distortion.filter_distortion_table
+   thuban.distortion.make_empty_distortion_model
+   thuban.distortion.compute_distortion
+
+
+
+.. py:function:: filter_distortion_table(data: numpy.ndarray, blur_sigma: float = 4, med_filter_size: float = 3) -> numpy.ndarray
+
+   Returns a filtered copy of a distortion map table.
+
+   Any rows/columns at the edges that are all NaNs will be removed and
+   replaced with a copy of the closest non-removed edge at the end of
+   processing.
+
+   Any NaN values that don't form a complete edge row/column will be replaced
+   with the median of all surrounding non-NaN pixels.
+
+   Then median filtering is performed across the whole map to remove outliers,
+   and Gaussian filtering is applied to accept only slowly-varying
+   distortions.
+
+   :param data: The distortion map to be filtered
+   :param blur_sigma: The number of pixels constituting one standard deviation of the
+                      Gaussian kernel. Set to 0 to disable Gaussian blurring.
+   :type blur_sigma: float
+   :param med_filter_size: The size of the local neighborhood to consider for median filtering.
+                           Set to 0 to disable median filtering.
+   :type med_filter_size: int
+
+   .. rubric:: Notes
+
+   Modified from https://github.com/svank/wispr_analysis/blob/main/wispr_analysis/image_alignment.py
+
+
+.. py:function:: make_empty_distortion_model(num_bins: int, image: numpy.ndarray) -> (astropy.wcs.DistortionLookupTable, astropy.wcs.DistortionLookupTable)
+
+   Create an empty distortion table
+
+   :param num_bins: number of histogram bins in the distortion model, i.e. the size of the distortion model is (num_bins, num_bins)
+   :type num_bins: int
+   :param image: image to create a distortion model for
+   :type image: np.ndarray
+
+   :returns: x and y distortion models
+   :rtype: (DistortionLookupTable, DistortionLookupTable)
+
+
+.. py:function:: compute_distortion(img_shape: (int, int), catalog_positions: numpy.ndarray, found_positions: numpy.ndarray, distortion_limit: float = 20, num_bins: int = 75, blur_sigma: float = 4, med_filter_size: int = 3) -> (astropy.wcs.DistortionLookupTable, astropy.wcs.DistortionLookupTable)
+
+   Given the derived catalog and actual star positions, determines the distortion
+
+   :param img_shape: shape of the image to compute the distortion for
+   :type img_shape: (int, int)
+   :param catalog_positions: pixel positions of the stars according to the catalog; (N, 2) in shape where N is number of stars
+   :type catalog_positions: np.ndarray
+   :param found_positions: pixel positions of the stars found by sep in the image; (N, 2) in shape where N is the number of stars
+   :type found_positions: np.ndarray
+   :param distortion_limit: stars with distortion greater than this are not considered as they're a mismatch instead of true distortion
+   :type distortion_limit: float
+   :param num_bins: number of histogram bins in the distortion model, i.e. the size of the distortion model is (num_bins, num_bins)
+   :type num_bins: int
+   :param blur_sigma: The number of pixels constituting one standard deviation of the
+                      Gaussian kernel. Set to 0 to disable Gaussian blurring.
+   :type blur_sigma: float
+   :param med_filter_size: The size of the local neighborhood to consider for median filtering.
+                           Set to 0 to disable median filtering.
+   :type med_filter_size: int
+
+   :returns: x and y distortion models determined from the star locations
+   :rtype: (DistortionLookupTable, DistortionLookupTable)
+
+

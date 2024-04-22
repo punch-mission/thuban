@@ -1,0 +1,91 @@
+:py:mod:`thuban.pointing`
+=========================
+
+.. py:module:: thuban.pointing
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   thuban.pointing.convert_cd_matrix_to_pc_matrix
+   thuban.pointing.calculate_pc_matrix
+   thuban.pointing._residual
+   thuban.pointing.refine_pointing
+   thuban.pointing.get_star_lists
+
+
+
+.. py:function:: convert_cd_matrix_to_pc_matrix(wcs)
+
+
+.. py:function:: calculate_pc_matrix(crota: float, cdelt: (float, float)) -> numpy.ndarray
+
+   Calculate a PC matrix given CROTA and CDELT
+
+   :param crota: rotation angle from the WCS
+   :type crota: float
+   :param cdelt: pixel size from the WCS
+   :type cdelt: float
+
+   :returns: PC matrix
+   :rtype: np.ndarray
+
+
+.. py:function:: _residual(params: lmfit.Parameters, observed_coords: numpy.ndarray, catalog: pandas.DataFrame, guess_wcs: astropy.wcs.WCS, x_lim: (int, int) = (0, 2048), y_lim: (int, int) = (0, 2048), n: int = 30)
+
+   Residual used when optimizing the pointing
+
+   :param params: optimization parameters from lmfit
+   :type params: Parameters
+   :param observed_coords: pixel coordinates of stars observed in the image, i.e. the coordinates found by sep of the actual star location
+   :type observed_coords: np.ndarray
+   :param catalog: image catalog of stars to match against
+   :type catalog: pd.DataFrame
+   :param guess_wcs: initial guess of the world coordinate system, must overlap with the true WCS
+   :type guess_wcs: WCS
+   :param x_lim: start and end x pixel coordinates to use of the image for pointing determination
+   :type x_lim: (int, int)
+   :param y_lim: start and end y pixel coordinates to use of the image for the pointing determination
+   :type y_lim: (int, int)
+   :param n: number of stars to randomly select when doing each iteration of the optimization
+   :type n: int
+
+   :returns: residual
+   :rtype: np.ndarray
+
+
+.. py:function:: refine_pointing(image, guess_wcs, file_index, observed_coords, catalog, background_width=16, background_height=16, detection_threshold=5, x_lim=(0, 2048), y_lim=(0, 2048), n=30)
+
+   Refine the pointing for an image
+
+   :param image: the brightnesses of the image, no preprocessing necessary
+   :type image: np.ndarray
+   :param guess_wcs: initial guess for th world coordinate system, must overlap with the true WCS
+   :type guess_wcs: WCS
+   :param file_index:
+   :param observed_coords:
+   :param catalog:
+   :param background_width:
+   :param background_height:
+   :param detection_threshold:
+   :param x_lim:
+   :param y_lim:
+   :param n:
+
+
+.. py:function:: get_star_lists(catalog, refined_wcs, observed_coords, max_distance=20) -> (numpy.ndarray, numpy.ndarray, numpy.ndarray)
+
+   Calculates the stars vi
+
+   :param catalog:
+   :param refined_wcs:
+   :param observed_coords:
+   :param max_distance:
+
+

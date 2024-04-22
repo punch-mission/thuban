@@ -1,0 +1,38 @@
+:py:mod:`thuban.util`
+=====================
+
+.. py:module:: thuban.util
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   thuban.util.remove_pairless_points
+   thuban.util.find_celestial_wcs
+
+
+
+.. py:function:: remove_pairless_points(a: numpy.ndarray, b: numpy.ndarray, max_distance=20) -> (numpy.ndarray, numpy.ndarray)
+
+   Given two lists (a and b), remove points that don't have a neighbor within `max_distance` in the other set
+
+   :param a: an array of points [N, d] where N is the number of points and d is the dimensionality
+   :type a: np.ndarray
+   :param b: an array of points [N, d] where N is the number of points and d is the dimensionality
+   :type b: np.ndarray
+   :param max_distance: points without a neighbor in the other set within `max_distance` will be removed
+   :type max_distance: float
+
+   :returns: point sets with pairless points removed
+   :rtype: (np.ndarray, np.ndarray)
+
+
+.. py:function:: find_celestial_wcs(hdul)
+
+

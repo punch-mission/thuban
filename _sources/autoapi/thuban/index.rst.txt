@@ -1,0 +1,84 @@
+:py:mod:`thuban`
+================
+
+.. py:module:: thuban
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   catalog/index.rst
+   cli/index.rst
+   distortion/index.rst
+   pointing/index.rst
+   util/index.rst
+   visualize/index.rst
+
+
+Package Contents
+----------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   thuban.filter_for_visible_stars
+   thuban.load_hipparcos_catalog
+   thuban.compute_distortion
+
+
+
+.. py:function:: filter_for_visible_stars(catalog: pandas.DataFrame, dimmest_magnitude: float = 6) -> pandas.DataFrame
+
+   Filters to only include stars brighter than a given magnitude
+
+   :param catalog: a catalog loaded from `~thuban.catalog.load_hipparcos_catalog` or `~thuban.catalog.load_raw_hipparcos_catalog`
+   :type catalog: pd.DataFrame
+   :param dimmest_magnitude: the dimmest magnitude to keep
+   :type dimmest_magnitude: float
+
+   :returns: a catalog with stars dimmer than the `dimmest_magnitude` removed
+   :rtype: pd.DataFrame
+
+
+.. py:function:: load_hipparcos_catalog(catalog_path: str = get_data('reduced_hip.csv')) -> pandas.DataFrame
+
+   Load the Hipparcos catalog from the local, reduced version. This version only keeps necessary columns.
+
+   :param catalog_path: path to the catalog, defaults to a provided version
+   :type catalog_path: str
+
+   :returns: loaded catalog with selected columns
+   :rtype: pd.DataFrame
+
+
+.. py:function:: compute_distortion(img_shape: (int, int), catalog_positions: numpy.ndarray, found_positions: numpy.ndarray, distortion_limit: float = 20, num_bins: int = 75, blur_sigma: float = 4, med_filter_size: int = 3) -> (astropy.wcs.DistortionLookupTable, astropy.wcs.DistortionLookupTable)
+
+   Given the derived catalog and actual star positions, determines the distortion
+
+   :param img_shape: shape of the image to compute the distortion for
+   :type img_shape: (int, int)
+   :param catalog_positions: pixel positions of the stars according to the catalog; (N, 2) in shape where N is number of stars
+   :type catalog_positions: np.ndarray
+   :param found_positions: pixel positions of the stars found by sep in the image; (N, 2) in shape where N is the number of stars
+   :type found_positions: np.ndarray
+   :param distortion_limit: stars with distortion greater than this are not considered as they're a mismatch instead of true distortion
+   :type distortion_limit: float
+   :param num_bins: number of histogram bins in the distortion model, i.e. the size of the distortion model is (num_bins, num_bins)
+   :type num_bins: int
+   :param blur_sigma: The number of pixels constituting one standard deviation of the
+                      Gaussian kernel. Set to 0 to disable Gaussian blurring.
+   :type blur_sigma: float
+   :param med_filter_size: The size of the local neighborhood to consider for median filtering.
+                           Set to 0 to disable median filtering.
+   :type med_filter_size: int
+
+   :returns: x and y distortion models determined from the star locations
+   :rtype: (DistortionLookupTable, DistortionLookupTable)
+
+
