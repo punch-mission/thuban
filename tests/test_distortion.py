@@ -90,6 +90,7 @@ def test_filter_distortion_table_gaussian_filter_image():
 
 
 def test_make_empty_distortion_model():
+    """tests making an empty distortion model"""
     data = np.zeros((100, 100))
     num_bins = 10
     cpdis1, cpdis2 = make_empty_distortion_model(num_bins, data)
@@ -102,6 +103,7 @@ def test_make_empty_distortion_model():
 
 
 def test_compute_distortion_random_arrays():
+    """given random arrays computes the distortion model"""
     num_bins = 75
     x = np.random.randint(0, 1023, (10000, 2))
     y = np.random.randint(0, 1023, (10000, 2))
