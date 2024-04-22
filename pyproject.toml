@@ -10,10 +10,12 @@ dependencies = ["numpy",
     "astropy",
     "matplotlib",
     "pandas",
-    "ndcube",
     "sep",
-    "sunpy",
-    "scipy"
+    "scipy",
+    "scikit-learn",
+    "lmfit",
+    "tqdm",
+    "click"
 ]
 requires-python = ">=3.9"
 authors = [
@@ -22,7 +24,7 @@ authors = [
 maintainers = [
   {name = "J. Marcus Hughes", email = "hughes.jmb@gmail.com"}
 ]
-description = "Fix the pointing of yo"
+description = "High precision and accuracy astrometric image solving from a guess"
 readme = "README.md"
 license = {file = "LICENSE.md"}
 keywords = ["thuban", "solar", "physics", "analysis", "astrometry", "astronomy"]
@@ -33,7 +35,10 @@ classifiers = [
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-doctestplus", "pytest-cov", "ruff", "coverage"]
-docs = ["sphinx", "sphinx-autoapi", "sphinx-automodapi", "pydata-sphinx-theme"]
+docs = ["sphinx", "sphinx-autoapi", "sphinx-automodapi", "pydata-sphinx-theme", "sphinx-favicon", "ipython"]
+
+[project.scripts]
+thuban = "thuban.cli:determine_pointing_and_distortion"
 
 [project.urls]
 Homepage = "https://example.com"

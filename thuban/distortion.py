@@ -93,21 +93,24 @@ def filter_distortion_table(data: np.ndarray, blur_sigma: float = 4, med_filter_
     return np.pad(data, [trimmed[0:2], trimmed[2:]], mode="edge")
 
 
-def make_empty_distortion_model(num_bins, data):
-    """
+def make_empty_distortion_model(num_bins: int, image: np.ndarray) -> (DistortionLookupTable, DistortionLookupTable):
+    """ Create an empty distortion table
 
     Parameters
     ----------
-    num_bins
-    data
+    num_bins : int
+        number of histogram bins in the distortion model, i.e. the size of the distortion model is (num_bins, num_bins)
+    image : np.ndarray
+        image to create a distortion model for
 
     Returns
     -------
-
+    (DistortionLookupTable, DistortionLookupTable)
+        x and y distortion models
     """
     # make an initial empty distortion model
-    r = np.linspace(0, data.shape[0], num_bins + 1)
-    c = np.linspace(0, data.shape[1], num_bins + 1)
+    r = np.linspace(0, image.shape[0], num_bins + 1)
+    c = np.linspace(0, image.shape[1], num_bins + 1)
     r = (r[1:] + r[:-1]) / 2
     c = (c[1:] + c[:-1]) / 2
 
@@ -125,23 +128,36 @@ def make_empty_distortion_model(num_bins, data):
 
 
 def compute_distortion(
-    img_shape, catalog_positions, found_positions, distortion_limit=20, num_bins=75, blur_sigma=4, med_filter_size=3
-):
-    """
+    img_shape: (int, int),
+        catalog_positions: np.ndarray,
+        found_positions: np.ndarray,
+        distortion_limit: float =20, num_bins: int =75, blur_sigma: float =4, med_filter_size: int=3
+) -> (DistortionLookupTable, DistortionLookupTable):
+    """ Given the derived catalog and actual star positions, determines the distortion
 
     Parameters
     ----------
-    img_shape
-    catalog_positions
-    found_positions
-    distortion_limit
-    num_bins
-    blur_sigma
-    med_filter_size
+    img_shape : (int, int)
+        shape of the image to compute the distortion for
+    catalog_positions : np.ndarray
+        pixel positions of the stars according to the catalog; (N, 2) in shape where N is number of stars
+    found_positions : np.ndarray
+        pixel positions of the stars found by sep in the image; (N, 2) in shape where N is the number of stars
+    distortion_limit : float
+        stars with distortion greater than this are not considered as they're a mismatch instead of true distortion
+    num_bins : int
+        number of histogram bins in the distortion model, i.e. the size of the distortion model is (num_bins, num_bins)
+    blur_sigma : float
+        The number of pixels constituting one standard deviation of the
+        Gaussian kernel. Set to 0 to disable Gaussian blurring.
+    med_filter_size : int
+        The size of the local neighborhood to consider for median filtering.
+        Set to 0 to disable median filtering.
 
     Returns
     -------
-
+    (DistortionLookupTable, DistortionLookupTable)
+        x and y distortion models determined from the star locations
     """
     distortion = catalog_positions - found_positions
     indices_to_keep = np.where(
