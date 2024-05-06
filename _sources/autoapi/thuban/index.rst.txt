@@ -13,6 +13,7 @@ Submodules
    catalog/index.rst
    cli/index.rst
    distortion/index.rst
+   error/index.rst
    pointing/index.rst
    util/index.rst
    visualize/index.rst

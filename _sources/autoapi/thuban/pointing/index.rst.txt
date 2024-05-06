@@ -37,7 +37,7 @@ Functions
    :rtype: np.ndarray
 
 
-.. py:function:: _residual(params: lmfit.Parameters, observed_coords: numpy.ndarray, catalog: pandas.DataFrame, guess_wcs: astropy.wcs.WCS, x_lim: (int, int) = (0, 2048), y_lim: (int, int) = (0, 2048), n: int = 30)
+.. py:function:: _residual(params: lmfit.Parameters, observed_coords: numpy.ndarray, catalog: pandas.DataFrame, guess_wcs: astropy.wcs.WCS, ii, image_shape: (int, int), max_distance=15)
 
    Residual used when optimizing the pointing
 
@@ -60,7 +60,7 @@ Functions
    :rtype: np.ndarray
 
 
-.. py:function:: refine_pointing(image, guess_wcs, file_index, observed_coords, catalog, background_width=16, background_height=16, detection_threshold=5, x_lim=(0, 2048), y_lim=(0, 2048), n=30)
+.. py:function:: refine_pointing(image, guess_wcs, observed_coords=None, catalog=None, background_width=16, background_height=16, max_distance=15, top_stars=100, detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1)
 
    Refine the pointing for an image
 

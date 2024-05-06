@@ -299,6 +299,7 @@ document.write(`
 <li class="toctree-l2 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.catalog</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.cli</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../distortion/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.distortion</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.error</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pointing/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.pointing</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../util/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.util</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../visualize/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.visualize</span></code></a></li>
@@ -381,7 +382,7 @@ document.write(`
 <tr class="row-odd"><td><p><a class="reference internal" href="#thuban.catalog.filter_for_visible_stars" title="thuban.catalog.filter_for_visible_stars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_for_visible_stars</span></code></a>(→ pandas.DataFrame)</p></td>
 <td><p>Filters to only include stars brighter than a given magnitude</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#thuban.catalog.find_star_coordinates_in_image" title="thuban.catalog.find_star_coordinates_in_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_star_coordinates_in_image</span></code></a>(=, y_lim, mode)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#thuban.catalog.find_catalog_in_image" title="thuban.catalog.find_catalog_in_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_catalog_in_image</span></code></a>(, mode)</p></td>
 <td><p>Using the provided WCS converts the RA/DEC catalog into pixel coordinates</p></td>
 </tr>
 </tbody>
@@ -456,20 +457,18 @@ document.write(`
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="thuban.catalog.find_star_coordinates_in_image">
-<span class="sig-prename descclassname"><span class="pre">thuban.catalog.</span></span><span class="sig-name descname"><span class="pre">find_star_coordinates_in_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">astropy.wcs.WCS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_lim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1024)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_lim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1024)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#thuban.catalog.find_star_coordinates_in_image" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="thuban.catalog.find_catalog_in_image">
+<span class="sig-prename descclassname"><span class="pre">thuban.catalog.</span></span><span class="sig-name descname"><span class="pre">find_catalog_in_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">astropy.wcs.WCS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#thuban.catalog.find_catalog_in_image" title="Link to this definition">#</a></dt>
 <dd><p>Using the provided WCS converts the RA/DEC catalog into pixel coordinates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>catalog</strong> (<em>pd.DataFrame</em>) – a catalog loaded from <cite>~thuban.catalog.load_hipparcos_catalog</cite> or <cite>~thuban.catalog.load_raw_hipparcos_catalog</cite></p></li>
 <li><p><strong>wcs</strong> (<em>WCS</em>) – the world coordinate system of a given image</p></li>
-<li><p><strong>x_lim</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – the valid starting and ending x dimension pixel coordinates, all others are discarded
-could be set from the image shape</p></li>
-<li><p><strong>y_lim</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – the valid starting and ending y dimension pixel coordinates, all others are discarded
-could be set from the image shape</p></li>
+<li><p><strong>image_shape</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – the shape of the image array associated with the WCS, used to only consider stars with coordinates in image</p></li>
 <li><p><strong>mode</strong> (<em>str</em>) – either “all” or “wcs”,
-see &lt;<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel">https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel</a>&gt;</p></li>
+see
+&lt;<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel">https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel</a>&gt;</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -538,7 +537,7 @@ see &lt;<a class="reference external" href="https://docs.astropy.org/en/stable/a
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.load_hipparcos_catalog"><code class="docutils literal notranslate"><span class="pre">load_hipparcos_catalog()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.load_raw_hipparcos_catalog"><code class="docutils literal notranslate"><span class="pre">load_raw_hipparcos_catalog()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.filter_for_visible_stars"><code class="docutils literal notranslate"><span class="pre">filter_for_visible_stars()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.find_star_coordinates_in_image"><code class="docutils literal notranslate"><span class="pre">find_star_coordinates_in_image()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.find_catalog_in_image"><code class="docutils literal notranslate"><span class="pre">find_catalog_in_image()</span></code></a></li>
 </ul>
 </li>
 </ul>

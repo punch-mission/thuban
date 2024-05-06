@@ -16,7 +16,7 @@ Functions
    thuban.catalog.load_hipparcos_catalog
    thuban.catalog.load_raw_hipparcos_catalog
    thuban.catalog.filter_for_visible_stars
-   thuban.catalog.find_star_coordinates_in_image
+   thuban.catalog.find_catalog_in_image
 
 
 
@@ -68,7 +68,7 @@ Attributes
    :rtype: pd.DataFrame
 
 
-.. py:function:: find_star_coordinates_in_image(catalog: pandas.DataFrame, wcs: astropy.wcs.WCS, x_lim: (int, int) = (0, 1024), y_lim: (int, int) = (0, 1024), mode: str = 'all') -> numpy.ndarray
+.. py:function:: find_catalog_in_image(catalog: pandas.DataFrame, wcs: astropy.wcs.WCS, image_shape: (int, int), mode: str = 'all') -> numpy.ndarray
 
    Using the provided WCS converts the RA/DEC catalog into pixel coordinates
 
@@ -76,14 +76,11 @@ Attributes
    :type catalog: pd.DataFrame
    :param wcs: the world coordinate system of a given image
    :type wcs: WCS
-   :param x_lim: the valid starting and ending x dimension pixel coordinates, all others are discarded
-                 could be set from the image shape
-   :type x_lim: (int, int)
-   :param y_lim: the valid starting and ending y dimension pixel coordinates, all others are discarded
-                 could be set from the image shape
-   :type y_lim: (int, int)
+   :param image_shape: the shape of the image array associated with the WCS, used to only consider stars with coordinates in image
+   :type image_shape: (int, int)
    :param mode: either "all" or "wcs",
-                see <https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel>
+                see
+                <https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel>
    :type mode: str
 
    :returns: pixel coordinates of stars in catalog that are present in the image

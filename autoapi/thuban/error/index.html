@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="../../../_static/favicon.ico" rel="icon" type="image/x-icon">
-    <title>thuban.visualize &#8212; thuban 0.0.1 documentation</title>
+    <title>thuban.error &#8212; thuban 0.0.1 documentation</title>
   
   
   
@@ -39,10 +39,11 @@
     <script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/thuban/visualize/index';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/thuban/error/index';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="prev" title="thuban.util" href="../util/index.html" />
+    <link rel="next" title="thuban.pointing" href="../pointing/index.html" />
+    <link rel="prev" title="thuban.distortion" href="../distortion/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -298,10 +299,10 @@ document.write(`
 <li class="toctree-l2"><a class="reference internal" href="../catalog/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.catalog</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../cli/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.cli</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../distortion/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.distortion</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../error/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.error</span></code></a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.error</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pointing/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.pointing</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="../util/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.util</span></code></a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.visualize</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.visualize</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -364,25 +365,24 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-thuban.visualize">
-<span id="thuban-visualize"></span><h1><a class="reference internal" href="#module-thuban.visualize" title="thuban.visualize"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.visualize</span></code></a><a class="headerlink" href="#module-thuban.visualize" title="Link to this heading">#</a></h1>
+  <section id="module-thuban.error">
+<span id="thuban-error"></span><h1><a class="reference internal" href="#module-thuban.error" title="thuban.error"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.error</span></code></a><a class="headerlink" href="#module-thuban.error" title="Link to this heading">#</a></h1>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
-<table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#thuban.visualize.plot_result_pointing_and_distortion" title="thuban.visualize.plot_result_pointing_and_distortion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_result_pointing_and_distortion</span></code></a>(image, ...[, ...])</p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py function">
-<dt class="sig sig-object py" id="thuban.visualize.plot_result_pointing_and_distortion">
-<span class="sig-prename descclassname"><span class="pre">thuban.visualize.</span></span><span class="sig-name descname"><span class="pre">plot_result_pointing_and_distortion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_positions_no_distort</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wcs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20000**2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Greys_r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(15,</span> <span class="pre">15)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#thuban.visualize.plot_result_pointing_and_distortion" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py exception">
+<dt class="sig sig-object py" id="thuban.error.ThubanWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">thuban.error.</span></span><span class="sig-name descname"><span class="pre">ThubanWarning</span></span><a class="headerlink" href="#thuban.error.ThubanWarning" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">Warning</span></code></p>
+<p>Warning class for Thuban</p>
+</dd></dl>
 
-</section>
+<dl class="py exception">
+<dt class="sig sig-object py" id="thuban.error.ConvergenceWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">thuban.error.</span></span><span class="sig-name descname"><span class="pre">ConvergenceWarning</span></span><a class="headerlink" href="#thuban.error.ConvergenceWarning" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#thuban.error.ThubanWarning" title="thuban.error.ThubanWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ThubanWarning</span></code></a></p>
+<p>A warning class to indicate when solving pointing or distortion does not converge</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -397,13 +397,22 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../util/index.html"
+       href="../distortion/index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.util</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.distortion</span></code></p>
       </div>
+    </a>
+    <a class="right-next"
+       href="../pointing/index.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.pointing</span></code></p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -424,10 +433,8 @@ document.write(`
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.visualize.plot_result_pointing_and_distortion"><code class="docutils literal notranslate"><span class="pre">plot_result_pointing_and_distortion()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.error.ThubanWarning"><code class="docutils literal notranslate"><span class="pre">ThubanWarning</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.error.ConvergenceWarning"><code class="docutils literal notranslate"><span class="pre">ConvergenceWarning</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -437,7 +444,7 @@ document.write(`
 
   
   <div class="tocsection editthispage">
-    <a href="https://github.com/punch-mission/thuban/edit/main/docs/autoapi/thuban/visualize/index.rst">
+    <a href="https://github.com/punch-mission/thuban/edit/main/docs/autoapi/thuban/error/index.rst">
       <i class="fa-solid fa-pencil"></i>
       
       
