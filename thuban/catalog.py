@@ -11,7 +11,7 @@ __all__ = [
     "load_hipparcos_catalog",
     "load_raw_hipparcos_catalog",
     "filter_for_visible_stars",
-    "find_star_coordinates_in_image",
+    "find_catalog_in_image",
 ]
 
 _ROOT = os.path.abspath(os.path.dirname(__file__))
@@ -162,8 +162,9 @@ def filter_for_visible_stars(catalog: pd.DataFrame, dimmest_magnitude: float = 6
     return catalog[catalog["Vmag"] < dimmest_magnitude]
 
 
-def find_star_coordinates_in_image(
-    catalog: pd.DataFrame, wcs: WCS, x_lim: (int, int) = (0, 1024), y_lim: (int, int) = (0, 1024), mode: str = "all"
+def find_catalog_in_image(
+    catalog: pd.DataFrame, wcs: WCS, image_shape: (int, int),
+        mode: str = "all"
 ) -> np.ndarray:
     """Using the provided WCS converts the RA/DEC catalog into pixel coordinates
 
@@ -173,15 +174,12 @@ def find_star_coordinates_in_image(
         a catalog loaded from `~thuban.catalog.load_hipparcos_catalog` or `~thuban.catalog.load_raw_hipparcos_catalog`
     wcs : WCS
         the world coordinate system of a given image
-    x_lim : (int, int)
-        the valid starting and ending x dimension pixel coordinates, all others are discarded
-        could be set from the image shape
-    y_lim : (int, int)
-        the valid starting and ending y dimension pixel coordinates, all others are discarded
-        could be set from the image shape
+    image_shape: (int, int)
+        the shape of the image array associated with the WCS, used to only consider stars with coordinates in image
     mode : str
         either "all" or "wcs",
-        see <https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel>
+        see
+        <https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel>
 
     Returns
     -------
@@ -196,9 +194,8 @@ def find_star_coordinates_in_image(
         ).to_pixel(wcs, mode=mode)
     except NoConvergence as e:
         xs, ys = e.best_solution[:, 0], e.best_solution[:, 1]
-    bounds_mask = (x_lim[0] < xs) * (xs < x_lim[1]) * (y_lim[0] < ys) * (ys < y_lim[1])
-    return np.stack([xs[bounds_mask], ys[bounds_mask]], axis=-1)
-
-
-if __name__ == "__main__":
-    """Load and convert the raw Hipparcos catalog into the reduced version used by thuban"""
+    bounds_mask = (0 <= xs) * (xs < image_shape[0]) * (0 <= ys) * (ys < image_shape[1])
+    reduced_catalog = catalog[bounds_mask].copy()
+    reduced_catalog["x_pix"] = xs[bounds_mask]
+    reduced_catalog['y_pix'] = ys[bounds_mask]
+    return reduced_catalog

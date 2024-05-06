@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
+import pytest
 from astropy.wcs import WCS
 
-from thuban.catalog import (filter_for_visible_stars,
-                            find_star_coordinates_in_image,
+from thuban.catalog import (filter_for_visible_stars, find_catalog_in_image,
                             load_hipparcos_catalog, load_raw_hipparcos_catalog)
 
 
@@ -21,7 +21,7 @@ def test_catalog_filters():
     assert np.all(filtered["Vmag"] <= 6)
 
 
-def test_find_star_coordinates_in_image():
+def test_find_catalog_in_image():
     """tests that coordinates are properly selected"""
     catalog = load_hipparcos_catalog()
     w = WCS(naxis=2)
@@ -30,14 +30,15 @@ def test_find_star_coordinates_in_image():
     w.wcs.crval = [0, -90]
     w.wcs.ctype = ["RA---AIR", "DEC--AIR"]
     w.wcs.set_pv([(2, 1, 45.0)])
-    coordinates = find_star_coordinates_in_image(catalog, w, x_lim=(5, 1000), y_lim=(250, 1400))
-    assert len(coordinates) > 0
-    assert np.all(coordinates[:, 0] > 5)
-    assert np.all(coordinates[:, 0] < 1000)
-    assert np.all(coordinates[:, 1] > 250)
-    assert np.all(coordinates[:, 1] < 1400)
+    reduced_catalog = find_catalog_in_image(catalog, w, image_shape=(2048, 1024))
+    assert len(reduced_catalog) == 13_459
+    assert np.all(reduced_catalog['x_pix'] >= 0)
+    assert np.all(reduced_catalog['x_pix'] < 2048)
+    assert np.all(reduced_catalog['y_pix'] >= 0)
+    assert np.all(reduced_catalog['y_pix'] < 1024)
 
 
+@pytest.mark.slow()
 def test_download_catalog():
     """tests that the full catalog downloads"""
     raw_hipparcos = load_raw_hipparcos_catalog()
