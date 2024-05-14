@@ -58,3 +58,37 @@ def find_celestial_wcs(hdul):
             return hdu_num, key
 
     raise ValueError("No celestial WCS found")
+
+
+def sparsify(coords: np.ndarray, radius: float) -> np.ndarray:
+    """
+    Returns a sparsified version of the input coordinates array,
+    where only the points that are at least `radius` distance
+    apart from each other are kept.
+
+    Parameters:
+    -----------
+    coords : np.ndarray
+        The input array of shape (n, 2) containing the coordinates of the points.
+    radius : float
+        The minimum distance between two points to be kept in the output array.
+
+    Returns:
+    --------
+    np.ndarray
+        The sparsified array of shape (m, 2),
+        where `m` is the number of points that are at least `radius` distance apart
+        from each other.
+    """
+    _coords = coords.copy()
+    deleted_coords = np.zeros([], dtype=int)
+    sparse_coords = []
+
+    for i, s in enumerate(_coords):
+        if i not in deleted_coords:
+            distances = np.linalg.norm(_coords - s, axis=1)
+            idxs = np.flatnonzero(distances < radius)
+            sparse_coords.append(s)
+            deleted_coords = np.hstack([deleted_coords, idxs])
+
+    return np.array(sparse_coords)

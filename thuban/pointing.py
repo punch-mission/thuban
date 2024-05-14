@@ -1,4 +1,3 @@
-import random
 import warnings
 
 import numpy as np
@@ -7,7 +6,8 @@ import sep
 from astropy.wcs import WCS, utils
 from lmfit import Parameters, minimize
 
-from thuban.catalog import find_catalog_in_image, load_hipparcos_catalog
+from thuban.catalog import (filter_for_visible_stars, find_catalog_in_image,
+                            load_hipparcos_catalog)
 from thuban.error import ConvergenceWarning
 from thuban.util import remove_pairless_points
 
@@ -91,18 +91,22 @@ def _residual(params: Parameters,
 
     reduced_catalog = find_catalog_in_image(catalog, refined_wcs, image_shape=image_shape)
     refined_coords = np.stack([reduced_catalog['x_pix'], reduced_catalog['y_pix']], axis=-1)
-    if not np.isinf(max_distance):
-        observed_coords, refined_coords = remove_pairless_points(observed_coords, refined_coords, max_distance)
+
+    return [np.min(np.linalg.norm(observed_coords - coord, axis=-1)) for coord in refined_coords[ii]]
+
+    # if not np.isinf(max_distance):
+    #     observed_coords, refined_coords = remove_pairless_points(observed_coords, refined_coords, max_distance)
     # ii = np.min([np.array(list(range(n))),
     #              np.random.random_sample(np.arange(np.min(observed_coords.shape[0] - 1, n), )], axis=0).astype(int)
 
-    return observed_coords[ii] - refined_coords[ii]
+    # return observed_coords[ii] - refined_coords[ii]
     # return observed_coords - refined_coords
 
 
 def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
                     background_width=16, background_height=16, max_distance=15, top_stars=100,
-                    detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1):
+                    detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1,
+                    dimmest_magnitude=6.0, method='leastsq'):
     """ Refine the pointing for an image
 
     Parameters
@@ -126,7 +130,7 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
 
     """
     if catalog is None:
-        catalog = load_hipparcos_catalog()
+        catalog = filter_for_visible_stars(load_hipparcos_catalog(), dimmest_magnitude=dimmest_magnitude)
 
     if observed_coords is None:
         # find the stars in the background removed image
@@ -148,15 +152,17 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
     params.add("crval1", value=guess_wcs.wcs.crval[0], min=-180, max=180, vary=True)
     params.add("crval2", value=guess_wcs.wcs.crval[1], min=-90, max=90, vary=True)
 
-    indices = np.arange(np.min([top_stars, observed_coords.shape[0]]))
-    ii = random.choices(indices, k=num_stars)
+    # indices = np.arange(np.min([top_stars, observed_coords.shape[0]]))
+    # ii = random.choices(indices, k=num_stars)
+    ii = np.arange(num_stars)
 
     # optimize
     trial_num = 0
     result_wcses, result_minimizations = [], []
     while trial_num < max_trials:
         try:
-            out = minimize(_residual, params, args=(observed_coords, catalog, guess_wcs, ii, image.shape, max_distance))
+            out = minimize(_residual, params, method=method,
+                           args=(observed_coords, catalog, guess_wcs, ii, image.shape, max_distance))
             chisqr = out.chisqr
             result_minimizations.append(out)
         except IndexError:
