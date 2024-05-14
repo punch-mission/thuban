@@ -15,6 +15,7 @@ Functions
 
    thuban.util.remove_pairless_points
    thuban.util.find_celestial_wcs
+   thuban.util.sparsify
 
 
 
@@ -34,5 +35,26 @@ Functions
 
 
 .. py:function:: find_celestial_wcs(hdul)
+
+
+.. py:function:: sparsify(coords: numpy.ndarray, radius: float) -> numpy.ndarray
+
+   Returns a sparsified version of the input coordinates array,
+   where only the points that are at least `radius` distance
+   apart from each other are kept.
+
+   Parameters:
+   -----------
+   coords : np.ndarray
+       The input array of shape (n, 2) containing the coordinates of the points.
+   radius : float
+       The minimum distance between two points to be kept in the output array.
+
+   Returns:
+   --------
+   np.ndarray
+       The sparsified array of shape (m, 2),
+       where `m` is the number of points that are at least `radius` distance apart
+       from each other.
 
 

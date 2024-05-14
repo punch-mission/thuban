@@ -60,7 +60,7 @@ Functions
    :rtype: np.ndarray
 
 
-.. py:function:: refine_pointing(image, guess_wcs, observed_coords=None, catalog=None, background_width=16, background_height=16, max_distance=15, top_stars=100, detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1)
+.. py:function:: refine_pointing(image, guess_wcs, observed_coords=None, catalog=None, background_width=16, background_height=16, max_distance=15, top_stars=100, detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1, dimmest_magnitude=6.0, method='leastsq')
 
    Refine the pointing for an image
 

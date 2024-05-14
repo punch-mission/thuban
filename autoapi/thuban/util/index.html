@@ -379,6 +379,9 @@ document.write(`
 <tr class="row-even"><td><p><a class="reference internal" href="#thuban.util.find_celestial_wcs" title="thuban.util.find_celestial_wcs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_celestial_wcs</span></code></a>(hdul)</p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#thuban.util.sparsify" title="thuban.util.sparsify"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sparsify</span></code></a>(→ numpy.ndarray)</p></td>
+<td><p>Returns a sparsified version of the input coordinates array,</p></td>
+</tr>
 </tbody>
 </table>
 <dl class="py function">
@@ -406,6 +409,32 @@ document.write(`
 <dt class="sig sig-object py" id="thuban.util.find_celestial_wcs">
 <span class="sig-prename descclassname"><span class="pre">thuban.util.</span></span><span class="sig-name descname"><span class="pre">find_celestial_wcs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hdul</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#thuban.util.find_celestial_wcs" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="thuban.util.sparsify">
+<span class="sig-prename descclassname"><span class="pre">thuban.util.</span></span><span class="sig-name descname"><span class="pre">sparsify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#thuban.util.sparsify" title="Link to this definition">#</a></dt>
+<dd><p>Returns a sparsified version of the input coordinates array,
+where only the points that are at least <cite>radius</cite> distance
+apart from each other are kept.</p>
+<section id="parameters">
+<h4>Parameters:<a class="headerlink" href="#parameters" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>coords<span class="classifier">np.ndarray</span></dt><dd><p>The input array of shape (n, 2) containing the coordinates of the points.</p>
+</dd>
+<dt>radius<span class="classifier">float</span></dt><dd><p>The minimum distance between two points to be kept in the output array.</p>
+</dd>
+</dl>
+</section>
+<section id="returns">
+<h4>Returns:<a class="headerlink" href="#returns" title="Link to this heading">#</a></h4>
+<dl class="simple">
+<dt>np.ndarray</dt><dd><p>The sparsified array of shape (m, 2),
+where <cite>m</cite> is the number of points that are at least <cite>radius</cite> distance apart
+from each other.</p>
+</dd>
+</dl>
+</section>
+</dd></dl>
 
 </section>
 </section>
@@ -461,6 +490,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.util.remove_pairless_points"><code class="docutils literal notranslate"><span class="pre">remove_pairless_points()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.util.find_celestial_wcs"><code class="docutils literal notranslate"><span class="pre">find_celestial_wcs()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.util.sparsify"><code class="docutils literal notranslate"><span class="pre">sparsify()</span></code></a></li>
 </ul>
 </li>
 </ul>
