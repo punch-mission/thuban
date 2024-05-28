@@ -1,30 +1,27 @@
-:py:mod:`thuban`
-================
+thuban
+======
 
 .. py:module:: thuban
 
 
 Submodules
 ----------
+
 .. toctree::
-   :titlesonly:
    :maxdepth: 1
 
-   catalog/index.rst
-   cli/index.rst
-   distortion/index.rst
-   error/index.rst
-   pointing/index.rst
-   util/index.rst
-   visualize/index.rst
-
-
-Package Contents
-----------------
+   /autoapi/thuban/catalog/index
+   /autoapi/thuban/cli/index
+   /autoapi/thuban/distortion/index
+   /autoapi/thuban/error/index
+   /autoapi/thuban/pointing/index
+   /autoapi/thuban/simulate/index
+   /autoapi/thuban/util/index
+   /autoapi/thuban/visualize/index
 
 
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -33,6 +30,8 @@ Functions
    thuban.compute_distortion
 
 
+Package Contents
+----------------
 
 .. py:function:: filter_for_visible_stars(catalog: pandas.DataFrame, dimmest_magnitude: float = 6) -> pandas.DataFrame
 

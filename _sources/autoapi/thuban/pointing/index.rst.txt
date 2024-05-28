@@ -1,28 +1,113 @@
-:py:mod:`thuban.pointing`
-=========================
+thuban.pointing
+===============
 
 .. py:module:: thuban.pointing
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   thuban.pointing.ConvergenceWarning
+   thuban.pointing.RepeatedStarWarning
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   thuban.pointing.filter_for_visible_stars
+   thuban.pointing.find_catalog_in_image
+   thuban.pointing.load_hipparcos_catalog
+   thuban.pointing.remove_pairless_points
+   thuban.pointing.convert_cd_matrix_to_pc_matrix
+   thuban.pointing.calculate_pc_matrix
+   thuban.pointing._residual
+   thuban.pointing.refine_pointing_wrapper
+   thuban.pointing.refine_pointing
+   thuban.pointing.get_star_lists
 
 
 Module Contents
 ---------------
 
+.. py:function:: filter_for_visible_stars(catalog: pandas.DataFrame, dimmest_magnitude: float = 6) -> pandas.DataFrame
 
-Functions
-~~~~~~~~~
+   Filters to only include stars brighter than a given magnitude
 
-.. autoapisummary::
+   :param catalog: a catalog loaded from `~thuban.catalog.load_hipparcos_catalog` or `~thuban.catalog.load_raw_hipparcos_catalog`
+   :type catalog: pd.DataFrame
+   :param dimmest_magnitude: the dimmest magnitude to keep
+   :type dimmest_magnitude: float
 
-   thuban.pointing.convert_cd_matrix_to_pc_matrix
-   thuban.pointing.calculate_pc_matrix
-   thuban.pointing._residual
-   thuban.pointing.refine_pointing
-   thuban.pointing.get_star_lists
+   :returns: a catalog with stars dimmer than the `dimmest_magnitude` removed
+   :rtype: pd.DataFrame
 
+
+.. py:function:: find_catalog_in_image(catalog: pandas.DataFrame, wcs: astropy.wcs.WCS, image_shape: (int, int), mode: str = 'all') -> numpy.ndarray
+
+   Using the provided WCS converts the RA/DEC catalog into pixel coordinates
+
+   :param catalog: a catalog loaded from `~thuban.catalog.load_hipparcos_catalog` or `~thuban.catalog.load_raw_hipparcos_catalog`
+   :type catalog: pd.DataFrame
+   :param wcs: the world coordinate system of a given image
+   :type wcs: WCS
+   :param image_shape: the shape of the image array associated with the WCS, used to only consider stars with coordinates in image
+   :type image_shape: (int, int)
+   :param mode: either "all" or "wcs",
+                see
+                <https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel>
+   :type mode: str
+
+   :returns: pixel coordinates of stars in catalog that are present in the image
+   :rtype: np.ndarray
+
+
+.. py:function:: load_hipparcos_catalog(catalog_path: str = get_data('reduced_hip.csv')) -> pandas.DataFrame
+
+   Load the Hipparcos catalog from the local, reduced version. This version only keeps necessary columns.
+
+   :param catalog_path: path to the catalog, defaults to a provided version
+   :type catalog_path: str
+
+   :returns: loaded catalog with selected columns
+   :rtype: pd.DataFrame
+
+
+.. py:exception:: ConvergenceWarning
+
+   Bases: :py:obj:`ThubanWarning`
+
+
+   A warning class to indicate when solving pointing or distortion does not converge
+
+
+.. py:exception:: RepeatedStarWarning
+
+   Bases: :py:obj:`ThubanWarning`
+
+
+   A warning class to indicate when the pointing or distortion requires reusing a star because too few provided
+
+
+.. py:function:: remove_pairless_points(a: numpy.ndarray, b: numpy.ndarray, max_distance=20) -> (numpy.ndarray, numpy.ndarray)
+
+   Given two lists (a and b), remove points that don't have a neighbor within `max_distance` in the other set
+
+   :param a: an array of points [N, d] where N is the number of points and d is the dimensionality
+   :type a: np.ndarray
+   :param b: an array of points [N, d] where N is the number of points and d is the dimensionality
+   :type b: np.ndarray
+   :param max_distance: points without a neighbor in the other set within `max_distance` will be removed
+   :type max_distance: float
+
+   :returns: point sets with pairless points removed
+   :rtype: (np.ndarray, np.ndarray)
 
 
 .. py:function:: convert_cd_matrix_to_pc_matrix(wcs)
-
 
 .. py:function:: calculate_pc_matrix(crota: float, cdelt: (float, float)) -> numpy.ndarray
 
@@ -37,7 +122,7 @@ Functions
    :rtype: np.ndarray
 
 
-.. py:function:: _residual(params: lmfit.Parameters, observed_coords: numpy.ndarray, catalog: pandas.DataFrame, guess_wcs: astropy.wcs.WCS, ii, image_shape: (int, int), max_distance=15)
+.. py:function:: _residual(params: lmfit.Parameters, observed_coords: numpy.ndarray, catalog: pandas.DataFrame, guess_wcs: astropy.wcs.WCS, n: int, image_shape: (int, int))
 
    Residual used when optimizing the pointing
 
@@ -49,18 +134,16 @@ Functions
    :type catalog: pd.DataFrame
    :param guess_wcs: initial guess of the world coordinate system, must overlap with the true WCS
    :type guess_wcs: WCS
-   :param x_lim: start and end x pixel coordinates to use of the image for pointing determination
-   :type x_lim: (int, int)
-   :param y_lim: start and end y pixel coordinates to use of the image for the pointing determination
-   :type y_lim: (int, int)
-   :param n: number of stars to randomly select when doing each iteration of the optimization
+   :param n: number of stars to use in calculating the error
    :type n: int
 
    :returns: residual
    :rtype: np.ndarray
 
 
-.. py:function:: refine_pointing(image, guess_wcs, observed_coords=None, catalog=None, background_width=16, background_height=16, max_distance=15, top_stars=100, detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1, dimmest_magnitude=6.0, method='leastsq')
+.. py:function:: refine_pointing_wrapper(image, guess_wcs, file_num, observed_coords=None, catalog=None, background_width=16, background_height=16, detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1, dimmest_magnitude=6.0, method='leastsq')
+
+.. py:function:: refine_pointing(image, guess_wcs, observed_coords=None, catalog=None, background_width=16, background_height=16, detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1, dimmest_magnitude=6.0, method='leastsq')
 
    Refine the pointing for an image
 

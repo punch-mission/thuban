@@ -1,15 +1,11 @@
-:py:mod:`thuban.util`
-=====================
+thuban.util
+===========
 
 .. py:module:: thuban.util
 
 
-Module Contents
----------------
-
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
@@ -18,6 +14,8 @@ Functions
    thuban.util.sparsify
 
 
+Module Contents
+---------------
 
 .. py:function:: remove_pairless_points(a: numpy.ndarray, b: numpy.ndarray, max_distance=20) -> (numpy.ndarray, numpy.ndarray)
 
@@ -35,7 +33,6 @@ Functions
 
 
 .. py:function:: find_celestial_wcs(hdul)
-
 
 .. py:function:: sparsify(coords: numpy.ndarray, radius: float) -> numpy.ndarray
 

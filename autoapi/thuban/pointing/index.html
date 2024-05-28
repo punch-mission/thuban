@@ -42,7 +42,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/thuban/pointing/index';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="thuban.util" href="../util/index.html" />
+    <link rel="next" title="thuban.simulate" href="../simulate/index.html" />
     <link rel="prev" title="thuban.error" href="../error/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -295,14 +295,15 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../catalog/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.catalog</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cli/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.cli</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../distortion/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.distortion</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../error/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.error</span></code></a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.pointing</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../util/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.util</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../visualize/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.visualize</span></code></a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">thuban</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../catalog/index.html">thuban.catalog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli/index.html">thuban.cli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distortion/index.html">thuban.distortion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error/index.html">thuban.error</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">thuban.pointing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulate/index.html">thuban.simulate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../util/index.html">thuban.util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/index.html">thuban.visualize</a></li>
 </ul>
 </li>
 </ul>
@@ -346,9 +347,9 @@ document.write(`
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">API Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban</span></code></a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">thuban</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><code...</li>
+    <li class="breadcrumb-item active" aria-current="page">thuban.pointing</li>
   </ul>
 </nav>
 </div>
@@ -366,13 +367,36 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="module-thuban.pointing">
-<span id="thuban-pointing"></span><h1><a class="reference internal" href="#module-thuban.pointing" title="thuban.pointing"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.pointing</span></code></a><a class="headerlink" href="#module-thuban.pointing" title="Link to this heading">#</a></h1>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
+<span id="thuban-pointing"></span><h1>thuban.pointing<a class="headerlink" href="#module-thuban.pointing" title="Link to this heading">#</a></h1>
+<section id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Link to this heading">#</a></h2>
 <table class="autosummary longtable table autosummary">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#thuban.pointing.ConvergenceWarning" title="thuban.pointing.ConvergenceWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConvergenceWarning</span></code></a></p></td>
+<td><p>A warning class to indicate when solving pointing or distortion does not converge</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#thuban.pointing.RepeatedStarWarning" title="thuban.pointing.RepeatedStarWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RepeatedStarWarning</span></code></a></p></td>
+<td><p>A warning class to indicate when the pointing or distortion requires reusing a star because too few provided</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#thuban.pointing.filter_for_visible_stars" title="thuban.pointing.filter_for_visible_stars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_for_visible_stars</span></code></a>(→ pandas.DataFrame)</p></td>
+<td><p>Filters to only include stars brighter than a given magnitude</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#thuban.pointing.find_catalog_in_image" title="thuban.pointing.find_catalog_in_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_catalog_in_image</span></code></a>(, mode)</p></td>
+<td><p>Using the provided WCS converts the RA/DEC catalog into pixel coordinates</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#thuban.pointing.load_hipparcos_catalog" title="thuban.pointing.load_hipparcos_catalog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_hipparcos_catalog</span></code></a>() → pandas.DataFrame)</p></td>
+<td><p>Load the Hipparcos catalog from the local, reduced version. This version only keeps necessary columns.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#thuban.pointing.remove_pairless_points" title="thuban.pointing.remove_pairless_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_pairless_points</span></code></a>(a, b[, max_distance])</p></td>
+<td><p>Given two lists (a and b), remove points that don't have a neighbor within <cite>max_distance</cite> in the other set</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#thuban.pointing.convert_cd_matrix_to_pc_matrix" title="thuban.pointing.convert_cd_matrix_to_pc_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert_cd_matrix_to_pc_matrix</span></code></a>(wcs)</p></td>
 <td><p></p></td>
 </tr>
@@ -382,14 +406,116 @@ document.write(`
 <tr class="row-odd"><td><p><a class="reference internal" href="#thuban.pointing._residual" title="thuban.pointing._residual"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_residual</span></code></a>(params, observed_coords, catalog, guess_wcs, ...)</p></td>
 <td><p>Residual used when optimizing the pointing</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#thuban.pointing.refine_pointing" title="thuban.pointing.refine_pointing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">refine_pointing</span></code></a>(image, guess_wcs[, observed_coords, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#thuban.pointing.refine_pointing_wrapper" title="thuban.pointing.refine_pointing_wrapper"><code class="xref py py-obj docutils literal notranslate"><span class="pre">refine_pointing_wrapper</span></code></a>(image, guess_wcs, file_num[, ...])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#thuban.pointing.refine_pointing" title="thuban.pointing.refine_pointing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">refine_pointing</span></code></a>(image, guess_wcs[, observed_coords, ...])</p></td>
 <td><p>Refine the pointing for an image</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#thuban.pointing.get_star_lists" title="thuban.pointing.get_star_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_star_lists</span></code></a>(catalog, refined_wcs, observed_coords)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#thuban.pointing.get_star_lists" title="thuban.pointing.get_star_lists"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_star_lists</span></code></a>(catalog, refined_wcs, observed_coords)</p></td>
 <td><p>Calculates the stars vi</p></td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="thuban.pointing.filter_for_visible_stars">
+<span class="sig-prename descclassname"><span class="pre">thuban.pointing.</span></span><span class="sig-name descname"><span class="pre">filter_for_visible_stars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimmest_magnitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="headerlink" href="#thuban.pointing.filter_for_visible_stars" title="Link to this definition">#</a></dt>
+<dd><p>Filters to only include stars brighter than a given magnitude</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>catalog</strong> (<em>pd.DataFrame</em>) – a catalog loaded from <cite>~thuban.catalog.load_hipparcos_catalog</cite> or <cite>~thuban.catalog.load_raw_hipparcos_catalog</cite></p></li>
+<li><p><strong>dimmest_magnitude</strong> (<em>float</em>) – the dimmest magnitude to keep</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a catalog with stars dimmer than the <cite>dimmest_magnitude</cite> removed</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="thuban.pointing.find_catalog_in_image">
+<span class="sig-prename descclassname"><span class="pre">thuban.pointing.</span></span><span class="sig-name descname"><span class="pre">find_catalog_in_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">astropy.wcs.WCS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#thuban.pointing.find_catalog_in_image" title="Link to this definition">#</a></dt>
+<dd><p>Using the provided WCS converts the RA/DEC catalog into pixel coordinates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>catalog</strong> (<em>pd.DataFrame</em>) – a catalog loaded from <cite>~thuban.catalog.load_hipparcos_catalog</cite> or <cite>~thuban.catalog.load_raw_hipparcos_catalog</cite></p></li>
+<li><p><strong>wcs</strong> (<em>WCS</em>) – the world coordinate system of a given image</p></li>
+<li><p><strong>image_shape</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – the shape of the image array associated with the WCS, used to only consider stars with coordinates in image</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – either “all” or “wcs”,
+see
+&lt;<a class="reference external" href="https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel">https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel</a>&gt;</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pixel coordinates of stars in catalog that are present in the image</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="thuban.pointing.load_hipparcos_catalog">
+<span class="sig-prename descclassname"><span class="pre">thuban.pointing.</span></span><span class="sig-name descname"><span class="pre">load_hipparcos_catalog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">get_data('reduced_hip.csv')</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pandas.DataFrame</span></span></span><a class="headerlink" href="#thuban.pointing.load_hipparcos_catalog" title="Link to this definition">#</a></dt>
+<dd><p>Load the Hipparcos catalog from the local, reduced version. This version only keeps necessary columns.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>catalog_path</strong> (<em>str</em>) – path to the catalog, defaults to a provided version</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>loaded catalog with selected columns</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="thuban.pointing.ConvergenceWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">thuban.pointing.</span></span><span class="sig-name descname"><span class="pre">ConvergenceWarning</span></span><a class="headerlink" href="#thuban.pointing.ConvergenceWarning" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ThubanWarning</span></code></p>
+<p>A warning class to indicate when solving pointing or distortion does not converge</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="thuban.pointing.RepeatedStarWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">thuban.pointing.</span></span><span class="sig-name descname"><span class="pre">RepeatedStarWarning</span></span><a class="headerlink" href="#thuban.pointing.RepeatedStarWarning" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ThubanWarning</span></code></p>
+<p>A warning class to indicate when the pointing or distortion requires reusing a star because too few provided</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="thuban.pointing.remove_pairless_points">
+<span class="sig-prename descclassname"><span class="pre">thuban.pointing.</span></span><span class="sig-name descname"><span class="pre">remove_pairless_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#thuban.pointing.remove_pairless_points" title="Link to this definition">#</a></dt>
+<dd><p>Given two lists (a and b), remove points that don’t have a neighbor within <cite>max_distance</cite> in the other set</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>np.ndarray</em>) – an array of points [N, d] where N is the number of points and d is the dimensionality</p></li>
+<li><p><strong>b</strong> (<em>np.ndarray</em>) – an array of points [N, d] where N is the number of points and d is the dimensionality</p></li>
+<li><p><strong>max_distance</strong> (<em>float</em>) – points without a neighbor in the other set within <cite>max_distance</cite> will be removed</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>point sets with pairless points removed</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(np.ndarray, np.ndarray)</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="thuban.pointing.convert_cd_matrix_to_pc_matrix">
 <span class="sig-prename descclassname"><span class="pre">thuban.pointing.</span></span><span class="sig-name descname"><span class="pre">convert_cd_matrix_to_pc_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wcs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#thuban.pointing.convert_cd_matrix_to_pc_matrix" title="Link to this definition">#</a></dt>
@@ -417,7 +543,7 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="thuban.pointing._residual">
-<span class="sig-prename descclassname"><span class="pre">thuban.pointing.</span></span><span class="sig-name descname"><span class="pre">_residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lmfit.Parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed_coords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess_wcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">astropy.wcs.WCS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ii</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#thuban.pointing._residual" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">thuban.pointing.</span></span><span class="sig-name descname"><span class="pre">_residual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">lmfit.Parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed_coords</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess_wcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">astropy.wcs.WCS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#thuban.pointing._residual" title="Link to this definition">#</a></dt>
 <dd><p>Residual used when optimizing the pointing</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -426,9 +552,7 @@ document.write(`
 <li><p><strong>observed_coords</strong> (<em>np.ndarray</em>) – pixel coordinates of stars observed in the image, i.e. the coordinates found by sep of the actual star location</p></li>
 <li><p><strong>catalog</strong> (<em>pd.DataFrame</em>) – image catalog of stars to match against</p></li>
 <li><p><strong>guess_wcs</strong> (<em>WCS</em>) – initial guess of the world coordinate system, must overlap with the true WCS</p></li>
-<li><p><strong>x_lim</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – start and end x pixel coordinates to use of the image for pointing determination</p></li>
-<li><p><strong>y_lim</strong> (<em>(</em><em>int</em><em>, </em><em>int</em><em>)</em>) – start and end y pixel coordinates to use of the image for the pointing determination</p></li>
-<li><p><strong>n</strong> (<em>int</em>) – number of stars to randomly select when doing each iteration of the optimization</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – number of stars to use in calculating the error</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -441,8 +565,13 @@ document.write(`
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="thuban.pointing.refine_pointing_wrapper">
+<span class="sig-prename descclassname"><span class="pre">thuban.pointing.</span></span><span class="sig-name descname"><span class="pre">refine_pointing_wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess_wcs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detection_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_stars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chisqr_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimmest_magnitude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'leastsq'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#thuban.pointing.refine_pointing_wrapper" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="thuban.pointing.refine_pointing">
-<span class="sig-prename descclassname"><span class="pre">thuban.pointing.</span></span><span class="sig-name descname"><span class="pre">refine_pointing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess_wcs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_stars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detection_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_stars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chisqr_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimmest_magnitude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'leastsq'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#thuban.pointing.refine_pointing" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">thuban.pointing.</span></span><span class="sig-name descname"><span class="pre">refine_pointing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess_wcs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed_coords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detection_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_stars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_trials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chisqr_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimmest_magnitude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'leastsq'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#thuban.pointing.refine_pointing" title="Link to this definition">#</a></dt>
 <dd><p>Refine the pointing for an image</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -481,7 +610,6 @@ document.write(`
 
 </section>
 </section>
-</section>
 
 
                 </article>
@@ -499,15 +627,15 @@ document.write(`
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.error</span></code></p>
+        <p class="prev-next-title">thuban.error</p>
       </div>
     </a>
     <a class="right-next"
-       href="../util/index.html"
+       href="../simulate/index.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.util</span></code></p>
+        <p class="prev-next-title">thuban.simulate</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -529,15 +657,21 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exceptions">Exceptions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.convert_cd_matrix_to_pc_matrix"><code class="docutils literal notranslate"><span class="pre">convert_cd_matrix_to_pc_matrix()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.calculate_pc_matrix"><code class="docutils literal notranslate"><span class="pre">calculate_pc_matrix()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing._residual"><code class="docutils literal notranslate"><span class="pre">_residual()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.refine_pointing"><code class="docutils literal notranslate"><span class="pre">refine_pointing()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.get_star_lists"><code class="docutils literal notranslate"><span class="pre">get_star_lists()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.filter_for_visible_stars"><code class="docutils literal notranslate"><span class="pre">filter_for_visible_stars()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.find_catalog_in_image"><code class="docutils literal notranslate"><span class="pre">find_catalog_in_image()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.load_hipparcos_catalog"><code class="docutils literal notranslate"><span class="pre">load_hipparcos_catalog()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.ConvergenceWarning"><code class="docutils literal notranslate"><span class="pre">ConvergenceWarning</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.RepeatedStarWarning"><code class="docutils literal notranslate"><span class="pre">RepeatedStarWarning</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.remove_pairless_points"><code class="docutils literal notranslate"><span class="pre">remove_pairless_points()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.convert_cd_matrix_to_pc_matrix"><code class="docutils literal notranslate"><span class="pre">convert_cd_matrix_to_pc_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.calculate_pc_matrix"><code class="docutils literal notranslate"><span class="pre">calculate_pc_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing._residual"><code class="docutils literal notranslate"><span class="pre">_residual()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.refine_pointing_wrapper"><code class="docutils literal notranslate"><span class="pre">refine_pointing_wrapper()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.refine_pointing"><code class="docutils literal notranslate"><span class="pre">refine_pointing()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.pointing.get_star_lists"><code class="docutils literal notranslate"><span class="pre">get_star_lists()</span></code></a></li>
 </ul>
 </li>
 </ul>

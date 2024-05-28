@@ -1,7 +1,17 @@
-:py:mod:`thuban.error`
-======================
+thuban.error
+============
 
 .. py:module:: thuban.error
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   thuban.error.ThubanWarning
+   thuban.error.ConvergenceWarning
+   thuban.error.RepeatedStarWarning
 
 
 Module Contents
@@ -9,17 +19,25 @@ Module Contents
 
 .. py:exception:: ThubanWarning
 
-
    Bases: :py:obj:`Warning`
+
 
    Warning class for Thuban
 
 
 .. py:exception:: ConvergenceWarning
 
+   Bases: :py:obj:`ThubanWarning`
+
+
+   A warning class to indicate when solving pointing or distortion does not converge
+
+
+.. py:exception:: RepeatedStarWarning
 
    Bases: :py:obj:`ThubanWarning`
 
-   A warning class to indicate when solving pointing or distortion does not converge
+
+   A warning class to indicate when the pointing or distortion requires reusing a star because too few provided
 
 

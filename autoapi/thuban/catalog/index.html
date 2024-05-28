@@ -295,14 +295,15 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.catalog</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../cli/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.cli</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../distortion/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.distortion</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../error/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.error</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../pointing/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.pointing</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../util/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.util</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="../visualize/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.visualize</span></code></a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html">thuban</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">thuban.catalog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../cli/index.html">thuban.cli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distortion/index.html">thuban.distortion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../error/index.html">thuban.error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pointing/index.html">thuban.pointing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulate/index.html">thuban.simulate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../util/index.html">thuban.util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../visualize/index.html">thuban.visualize</a></li>
 </ul>
 </li>
 </ul>
@@ -346,9 +347,9 @@ document.write(`
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">API Reference</a></li>
     
     
-    <li class="breadcrumb-item"><a href="../index.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban</span></code></a></li>
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">thuban</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><code...</li>
+    <li class="breadcrumb-item active" aria-current="page">thuban.catalog</li>
   </ul>
 </nav>
 </div>
@@ -366,11 +367,19 @@ document.write(`
                 <article class="bd-article">
                   
   <section id="module-thuban.catalog">
-<span id="thuban-catalog"></span><h1><a class="reference internal" href="#module-thuban.catalog" title="thuban.catalog"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.catalog</span></code></a><a class="headerlink" href="#module-thuban.catalog" title="Link to this heading">#</a></h1>
-<section id="module-contents">
-<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<span id="thuban-catalog"></span><h1>thuban.catalog<a class="headerlink" href="#module-thuban.catalog" title="Link to this heading">#</a></h1>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h2>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#thuban.catalog.HIPPARCOS_URL" title="thuban.catalog.HIPPARCOS_URL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HIPPARCOS_URL</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h2>
 <table class="autosummary longtable table autosummary">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#thuban.catalog.load_hipparcos_catalog" title="thuban.catalog.load_hipparcos_catalog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_hipparcos_catalog</span></code></a>() → pandas.DataFrame)</p></td>
@@ -388,15 +397,8 @@ document.write(`
 </tbody>
 </table>
 </section>
-<section id="attributes">
-<h3>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">#</a></h3>
-<table class="autosummary longtable table autosummary">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#thuban.catalog.HIPPARCOS_URL" title="thuban.catalog.HIPPARCOS_URL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HIPPARCOS_URL</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-</tbody>
-</table>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py data">
 <dt class="sig sig-object py" id="thuban.catalog.HIPPARCOS_URL">
 <span class="sig-prename descclassname"><span class="pre">thuban.catalog.</span></span><span class="sig-name descname"><span class="pre">HIPPARCOS_URL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://cdsarc.cds.unistra.fr/ftp/cats/I/239/hip_main.dat'</span></em><a class="headerlink" href="#thuban.catalog.HIPPARCOS_URL" title="Link to this definition">#</a></dt>
@@ -482,7 +484,6 @@ see
 
 </section>
 </section>
-</section>
 
 
                 </article>
@@ -500,7 +501,7 @@ see
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban</span></code></p>
+        <p class="prev-next-title">thuban</p>
       </div>
     </a>
     <a class="right-next"
@@ -508,7 +509,7 @@ see
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">thuban.cli</span></code></p>
+        <p class="prev-next-title">thuban.cli</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -530,16 +531,14 @@ see
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#attributes">Attributes</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.HIPPARCOS_URL"><code class="docutils literal notranslate"><span class="pre">HIPPARCOS_URL</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.load_hipparcos_catalog"><code class="docutils literal notranslate"><span class="pre">load_hipparcos_catalog()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.load_raw_hipparcos_catalog"><code class="docutils literal notranslate"><span class="pre">load_raw_hipparcos_catalog()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.filter_for_visible_stars"><code class="docutils literal notranslate"><span class="pre">filter_for_visible_stars()</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.find_catalog_in_image"><code class="docutils literal notranslate"><span class="pre">find_catalog_in_image()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.HIPPARCOS_URL"><code class="docutils literal notranslate"><span class="pre">HIPPARCOS_URL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.load_hipparcos_catalog"><code class="docutils literal notranslate"><span class="pre">load_hipparcos_catalog()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.load_raw_hipparcos_catalog"><code class="docutils literal notranslate"><span class="pre">load_raw_hipparcos_catalog()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.filter_for_visible_stars"><code class="docutils literal notranslate"><span class="pre">filter_for_visible_stars()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#thuban.catalog.find_catalog_in_image"><code class="docutils literal notranslate"><span class="pre">find_catalog_in_image()</span></code></a></li>
 </ul>
 </li>
 </ul>

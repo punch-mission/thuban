@@ -1,22 +1,19 @@
-:py:mod:`thuban.visualize`
-==========================
+thuban.visualize
+================
 
 .. py:module:: thuban.visualize
 
 
-Module Contents
----------------
-
-
 Functions
-~~~~~~~~~
+---------
 
 .. autoapisummary::
 
    thuban.visualize.plot_result_pointing_and_distortion
 
 
+Module Contents
+---------------
 
 .. py:function:: plot_result_pointing_and_distortion(image, old_positions, new_positions_no_distort, new_positions, wcs, limit=3.5, vmin=0, vmax=20000**2, cmap='Greys_r', figsize=(15, 15))
-
 

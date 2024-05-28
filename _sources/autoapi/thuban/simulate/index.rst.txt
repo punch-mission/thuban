@@ -1,15 +1,7 @@
-thuban.catalog
-==============
+thuban.simulate
+===============
 
-.. py:module:: thuban.catalog
-
-
-Attributes
-----------
-
-.. autoapisummary::
-
-   thuban.catalog.HIPPARCOS_URL
+.. py:module:: thuban.simulate
 
 
 Functions
@@ -17,40 +9,13 @@ Functions
 
 .. autoapisummary::
 
-   thuban.catalog.load_hipparcos_catalog
-   thuban.catalog.load_raw_hipparcos_catalog
-   thuban.catalog.filter_for_visible_stars
-   thuban.catalog.find_catalog_in_image
+   thuban.simulate.filter_for_visible_stars
+   thuban.simulate.find_catalog_in_image
+   thuban.simulate.simulate_star_image
 
 
 Module Contents
 ---------------
-
-.. py:data:: HIPPARCOS_URL
-   :value: 'https://cdsarc.cds.unistra.fr/ftp/cats/I/239/hip_main.dat'
-
-
-.. py:function:: load_hipparcos_catalog(catalog_path: str = get_data('reduced_hip.csv')) -> pandas.DataFrame
-
-   Load the Hipparcos catalog from the local, reduced version. This version only keeps necessary columns.
-
-   :param catalog_path: path to the catalog, defaults to a provided version
-   :type catalog_path: str
-
-   :returns: loaded catalog with selected columns
-   :rtype: pd.DataFrame
-
-
-.. py:function:: load_raw_hipparcos_catalog(catalog_path: str = HIPPARCOS_URL) -> pandas.DataFrame
-
-   Download hipparcos catalog from website. Not recommended for routine use.
-
-   :param catalog_path: path to the Hipparcos catalog
-   :type catalog_path: str
-
-   :returns: loaded catalog with selected columns
-   :rtype: pd.DataFrame
-
 
 .. py:function:: filter_for_visible_stars(catalog: pandas.DataFrame, dimmest_magnitude: float = 6) -> pandas.DataFrame
 
@@ -83,4 +48,6 @@ Module Contents
    :returns: pixel coordinates of stars in catalog that are present in the image
    :rtype: np.ndarray
 
+
+.. py:function:: simulate_star_image(catalog, wcs, img_shape, fwhm, distortion_x_shift=None, distortion_y_shift=None, mag_set=0, flux_set=500000, noise_mean=25.0, noise_std=5.0)
 
