@@ -8,7 +8,7 @@ from lmfit import Parameters, minimize
 
 from thuban.catalog import (filter_for_visible_stars, find_catalog_in_image,
                             load_hipparcos_catalog)
-from thuban.error import ConvergenceWarning
+from thuban.error import ConvergenceWarning, RepeatedStarWarning
 from thuban.util import remove_pairless_points
 
 
@@ -16,7 +16,6 @@ def convert_cd_matrix_to_pc_matrix(wcs):
     if hasattr(wcs.wcs, 'cd'):
         cdelt1, cdelt2 = utils.proj_plane_pixel_scales(wcs)
         crota = np.arccos(wcs.wcs.cd[0, 0]/cdelt1)
-        print("CROTA", np.rad2deg(crota))
         new_wcs = WCS(naxis=2)
         new_wcs.wcs.ctype = wcs.wcs.ctype
         new_wcs.wcs.crval = wcs.wcs.crval
@@ -53,8 +52,11 @@ def calculate_pc_matrix(crota: float, cdelt: (float, float)) -> np.ndarray:
 
 
 def _residual(params: Parameters,
-              observed_coords: np.ndarray, catalog: pd.DataFrame, guess_wcs: WCS, ii,
-              image_shape: (int, int), max_distance=15):
+              observed_coords: np.ndarray,
+              catalog: pd.DataFrame,
+              guess_wcs: WCS,
+              n: int,
+              image_shape: (int, int)):
     """Residual used when optimizing the pointing
 
     Parameters
@@ -67,13 +69,8 @@ def _residual(params: Parameters,
         image catalog of stars to match against
     guess_wcs : WCS
         initial guess of the world coordinate system, must overlap with the true WCS
-    x_lim : (int, int)
-        start and end x pixel coordinates to use of the image for pointing determination
-    y_lim : (int, int)
-        start and end y pixel coordinates to use of the image for the pointing determination
-    n : int
-        number of stars to randomly select when doing each iteration of the optimization
-
+    n: int
+        number of stars to use in calculating the error
     Returns
     -------
     np.ndarray
@@ -92,19 +89,32 @@ def _residual(params: Parameters,
     reduced_catalog = find_catalog_in_image(catalog, refined_wcs, image_shape=image_shape)
     refined_coords = np.stack([reduced_catalog['x_pix'], reduced_catalog['y_pix']], axis=-1)
 
-    return [np.min(np.linalg.norm(observed_coords - coord, axis=-1)) for coord in refined_coords[ii]]
+    # repeat coordinates if there aren't enough stars to meet the n threshold and issue a warning
+    if len(refined_coords) < n:
+        refined_coords = np.concatenate([refined_coords, refined_coords[:(len(refined_coords) - n)]])
+        warnings.warn("Stars repeated in solving because too few found. "
+                      "Try decreasing `num_stars` or increasing `dimmest_magnitude`.",
+                      RepeatedStarWarning)
 
-    # if not np.isinf(max_distance):
-    #     observed_coords, refined_coords = remove_pairless_points(observed_coords, refined_coords, max_distance)
-    # ii = np.min([np.array(list(range(n))),
-    #              np.random.random_sample(np.arange(np.min(observed_coords.shape[0] - 1, n), )], axis=0).astype(int)
+    return [np.min(np.linalg.norm(observed_coords - coord, axis=-1)) for coord in refined_coords[:n]]
 
-    # return observed_coords[ii] - refined_coords[ii]
-    # return observed_coords - refined_coords
+
+def refine_pointing_wrapper(image, guess_wcs, file_num, observed_coords=None, catalog=None,
+                    background_width=16, background_height=16,
+                    detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1,
+                    dimmest_magnitude=6.0, method='leastsq'):
+    new_wcs, observed_coords, solution, trial_num = refine_pointing(image,
+                                                                    guess_wcs,
+                                                                    observed_coords=observed_coords, catalog=catalog,
+                    background_width=background_width, background_height=background_height,
+                    detection_threshold=detection_threshold, num_stars=num_stars, max_trials=max_trials,
+                            chisqr_threshold=chisqr_threshold,
+                    dimmest_magnitude=dimmest_magnitude, method=method)
+    return new_wcs, observed_coords, solution, trial_num, file_num
 
 
 def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
-                    background_width=16, background_height=16, max_distance=15, top_stars=100,
+                    background_width=16, background_height=16,
                     detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1,
                     dimmest_magnitude=6.0, method='leastsq'):
     """ Refine the pointing for an image
@@ -139,22 +149,11 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
         objects = sep.extract(data_sub, detection_threshold, err=background.globalrms)
         observed_coords = np.stack([objects["x"], objects["y"]], axis=-1)
 
-    # TODO: make masking and filtering better!
-    # bad_indices = np.where(
-    #     (object_positions[:, 0] > 800) * (object_positions[:, 0] < 1300) * (object_positions[:, 1] > 800) * (
-    #                 object_positions[:, 1] < 1300))[0]
-    # removed = set(range(object_positions.shape[0])) - set(bad_indices)
-    # object_positions = object_positions[np.array(list(removed)).astype(int)]
-
     # set up the optimization
     params = Parameters()
     params.add("crota", value=np.arctan2(guess_wcs.wcs.pc[1, 0], guess_wcs.wcs.pc[0, 0]), min=0, max=2 * np.pi)
     params.add("crval1", value=guess_wcs.wcs.crval[0], min=-180, max=180, vary=True)
     params.add("crval2", value=guess_wcs.wcs.crval[1], min=-90, max=90, vary=True)
-
-    # indices = np.arange(np.min([top_stars, observed_coords.shape[0]]))
-    # ii = random.choices(indices, k=num_stars)
-    ii = np.arange(num_stars)
 
     # optimize
     trial_num = 0
@@ -162,7 +161,7 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
     while trial_num < max_trials:
         try:
             out = minimize(_residual, params, method=method,
-                           args=(observed_coords, catalog, guess_wcs, ii, image.shape, max_distance))
+                           args=(observed_coords, catalog, guess_wcs, num_stars, image.shape))
             chisqr = out.chisqr
             result_minimizations.append(out)
         except IndexError:

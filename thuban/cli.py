@@ -5,23 +5,23 @@ from pathlib import Path
 
 import click
 import numpy as np
-import sep
 from astropy.io import fits
 from astropy.wcs import WCS
 from tqdm import tqdm
 
-from thuban.catalog import filter_for_visible_stars, load_hipparcos_catalog
+from thuban.catalog import (filter_for_visible_stars, find_catalog_in_image,
+                            load_hipparcos_catalog)
 from thuban.distortion import compute_distortion, make_empty_distortion_model
-from thuban.pointing import (convert_cd_matrix_to_pc_matrix, get_star_lists,
-                             refine_pointing)
-from thuban.util import find_celestial_wcs
+from thuban.pointing import (convert_cd_matrix_to_pc_matrix,
+                             refine_pointing_wrapper)
+from thuban.util import find_celestial_wcs, remove_pairless_points
 
 
 def _flatten_list(xss):
     return [x for xs in xss for x in xs]
 
 
-def get_files(directory: Path, valid_extensions=("fits","fts")) -> [Path]:
+def get_files(directory: Path, valid_extensions=("fits", "fts")) -> [Path]:
     valid_extensions = ["*." + ext for ext in valid_extensions]
     if directory.is_dir():
         return sorted(_flatten_list([list(directory.glob(ext)) for ext in valid_extensions]))
@@ -49,16 +49,16 @@ def open_files(paths: [Path], byte_swap=True) -> (np.ndarray, [fits.Header]):
 @click.command()
 @click.argument("directory", type=click.Path())
 @click.option("-b", "--byte_swap", default=True, is_flag=True)
-@click.option("-m", "--magnitude", default=8.0, type=float)
-@click.option("-l", "--limit", default=1.0, type=float)
+@click.option("-m", "--magnitude", default=7.0, type=float)
 @click.option("--num_bins", default=75, type=int)
 @click.option("-i", "--iterations", default=5, type=int)
 @click.option("-w", "--workers", default=16, type=int)
+@click.option("-n", "--num-stars", default=20, type=int)
 @click.option("--background", default=16, type=int)
 @click.option("--threshold", default=5, type=float)
 @click.option("--skip-distortion", default=False, is_flag=True)
-def determine_pointing_and_distortion(directory, byte_swap=True,
-                                      magnitude=8.0, limit=1.0, num_bins=75, iterations=5, workers=16,
+def determine_pointing_and_distortion(directory, byte_swap=True,  num_stars=20,
+                                      magnitude=7.0, num_bins=75, iterations=5, workers=16,
                                       background=16, threshold=5.0, skip_distortion=False):
     start = datetime.now()
 
@@ -71,10 +71,6 @@ def determine_pointing_and_distortion(directory, byte_swap=True,
 
     print("Opening files")
     data, headers, celestial_wcs_key = open_files(filenames, byte_swap)
-
-    print("Filtering catalog")
-    catalog = load_hipparcos_catalog()
-    visible_stars = filter_for_visible_stars(catalog, dimmest_magnitude=magnitude)
 
     print(headers)
     current_wcses = [convert_cd_matrix_to_pc_matrix(WCS(head, key=celestial_wcs_key)) for head in headers]
@@ -89,54 +85,63 @@ def determine_pointing_and_distortion(directory, byte_swap=True,
         wcs.cpdis2 = cpdis2
     print(current_wcses[0].wcs.cunit)
 
-    log = []
     counts = []
     for iteration in range(iterations):
         print(f"ITERATION {iteration} \n\tpreparing")
-        all_corrected_positions, all_found_positions = [], []
+        all_found_positions = []
         all_no_distortion = []
 
-        executor = concurrent.futures.ThreadPoolExecutor(max_workers=workers)
+        # executor = concurrent.futures.ThreadPoolExecutor(max_workers=workers)
+        executor = concurrent.futures.ProcessPoolExecutor(max_workers=workers)
+
         futures = []
         for file_index in tqdm(range(len(filenames))):
-            bkg = sep.Background(data[file_index], bw=background, bh=background)
-            d = data[file_index] - bkg
-            observed_table = sep.extract(d, threshold, err=bkg.globalrms)
-            observed_coords = np.stack([observed_table['x'], observed_table['y']], axis=-1)
-
             futures.append(
-                executor.submit(refine_pointing,
+                executor.submit(refine_pointing_wrapper,
                                 data[file_index],
                                 current_wcses[file_index],
                                 file_index,
-                                observed_coords,
-                                visible_stars))
+                                dimmest_magnitude=magnitude,
+                                num_stars=num_stars,
+                                chisqr_threshold=0.1,
+                                method='least_squares'))
 
         print("\tprocessing")
         with tqdm(total=len(futures)) as pbar:
             for future in concurrent.futures.as_completed(futures):
-                updated_wcs, file_index, observed_coords = future.result()
-                current_wcses[file_index] = updated_wcs
-                found, refined_coords, no_distortion = get_star_lists(visible_stars,
-                                                                      current_wcses[file_index],
-                                                                      observed_coords)
 
-                all_corrected_positions.append(refined_coords)
-                all_found_positions.append(found)
-                all_no_distortion.append(no_distortion)
+                updated_wcs, observed_coords, solution, num_trials, file_index = future.result()
+                current_wcses[file_index] = updated_wcs
+
+                new_stars = find_catalog_in_image(
+                    filter_for_visible_stars(load_hipparcos_catalog(), dimmest_magnitude=8.0),
+                    updated_wcs, data.shape[1:], mode='wcs')
+                all_no_distortion.append(np.stack([new_stars['x_pix'], new_stars['y_pix']], axis=-1))
+
+                all_found_positions.append(observed_coords)
+                # all_no_distortion.append(no_distortion)
                 pbar.update(1)
 
-        log.append((all_corrected_positions, all_found_positions))
-        all_corrected_positions = np.concatenate(all_corrected_positions)
-        all_found_positions = np.concatenate(all_found_positions)
-        all_no_distortion = np.concatenate(all_no_distortion)
-        count = len(all_corrected_positions)
+        # log.append((all_corrected_positions, all_found_positions))
+        count = len(all_no_distortion)
         counts.append(count)
+
+        final_observations, final_no_distortion = [], []
+        for i in range(len(all_no_distortion)):
+            observed_filtered, refined_filtered = remove_pairless_points(all_found_positions[i],
+                                                                         all_no_distortion[i],
+                                                                         max_distance=15)
+            final_observations.append(observed_filtered)
+            final_no_distortion.append(refined_filtered)
+        final_observations = np.concatenate(final_observations, axis=0)
+        final_refined = np.concatenate(final_no_distortion, axis=0)
+
+        print("star count:", final_refined.shape[0])
 
         if not skip_distortion:
             cpdis1, cpdis2 = compute_distortion(data[0].shape,
-                                                        all_found_positions,
-                                                        all_no_distortion,
+                                                        final_observations,
+                                                        final_refined,
                                                         num_bins=num_bins)
 
             for wcs in current_wcses:
