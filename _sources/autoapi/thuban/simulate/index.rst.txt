@@ -49,5 +49,5 @@ Module Contents
    :rtype: np.ndarray
 
 
-.. py:function:: simulate_star_image(catalog, wcs, img_shape, fwhm, distortion_x_shift=None, distortion_y_shift=None, mag_set=0, flux_set=500000, noise_mean=25.0, noise_std=5.0)
+.. py:function:: simulate_star_image(catalog, wcs, img_shape, fwhm, distortion_x_shift=None, distortion_y_shift=None, mag_set=0, flux_set=500000, noise_mean=25.0, noise_std=5.0, dimmest_magnitude=8)
 
