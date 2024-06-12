@@ -5,6 +5,7 @@ from pathlib import Path
 
 import click
 import numpy as np
+import sep
 from astropy.io import fits
 from astropy.wcs import WCS
 from tqdm import tqdm
@@ -33,7 +34,7 @@ def open_files(paths: [Path], byte_swap=True) -> (np.ndarray, [fits.Header]):
     with fits.open(paths[0]) as hdul:
         data_hdu_num, celestial_wcs_key = find_celestial_wcs(hdul)
 
-    all_data, all_headers = [], []
+    all_data, all_headers, all_wcses = [], [], []
     for filename in tqdm(paths):
         with fits.open(filename) as hdul:
             if byte_swap:
@@ -41,9 +42,10 @@ def open_files(paths: [Path], byte_swap=True) -> (np.ndarray, [fits.Header]):
             else:
                 data = hdul[data_hdu_num].data.astype(float)
             head = hdul[data_hdu_num].header
+            all_wcses.append(WCS(head, hdul, key=celestial_wcs_key))
         all_data.append(data)
         all_headers.append(head)
-    return np.array(all_data), all_headers, celestial_wcs_key
+    return np.array(all_data), all_headers, celestial_wcs_key, all_wcses
 
 
 @click.command()
@@ -70,10 +72,16 @@ def determine_pointing_and_distortion(directory, byte_swap=True,  num_stars=20,
         return
 
     print("Opening files")
-    data, headers, celestial_wcs_key = open_files(filenames, byte_swap)
+    data, headers, celestial_wcs_key, all_wcses = open_files(filenames, byte_swap)
+
+    # edge = 100
+    # data[:, :, :edge] = 0.0
+    # data[:, :edge, :] = 0.0
+    # data[:, -edge:, :] = 0.0
+    # data[:, :, -edge:] = 0.0
 
     print(headers)
-    current_wcses = [convert_cd_matrix_to_pc_matrix(WCS(head, key=celestial_wcs_key)) for head in headers]
+    current_wcses = [convert_cd_matrix_to_pc_matrix(w) for w in all_wcses]
 
     # remove any SIP distortion model and make an empty table
     cpdis1, cpdis2 = make_empty_distortion_model(num_bins, data[0])
@@ -101,17 +109,26 @@ def determine_pointing_and_distortion(directory, byte_swap=True,  num_stars=20,
                                 data[file_index],
                                 current_wcses[file_index],
                                 file_index,
+                                detection_threshold=threshold,
+                                max_trials=5,
                                 dimmest_magnitude=magnitude,
                                 num_stars=num_stars,
-                                chisqr_threshold=0.1,
+                                background_width=background,
+                                background_height=background,
+                                chisqr_threshold=0.05,
                                 method='least_squares'))
 
         print("\tprocessing")
         with tqdm(total=len(futures)) as pbar:
             for future in concurrent.futures.as_completed(futures):
 
-                updated_wcs, observed_coords, solution, num_trials, file_index = future.result()
+                updated_wcs, _, solution, num_trials, file_index = future.result()
                 current_wcses[file_index] = updated_wcs
+
+                bg = sep.Background(data[file_index], bw=background, bh=background)
+                data_sub = data[file_index] - bg
+                objects = sep.extract(data_sub, threshold, err=bg.globalrms)
+                observed_coords = np.stack([objects["x"], objects["y"]], axis=-1)
 
                 new_stars = find_catalog_in_image(
                     filter_for_visible_stars(load_hipparcos_catalog(), dimmest_magnitude=8.0),
@@ -131,8 +148,10 @@ def determine_pointing_and_distortion(directory, byte_swap=True,  num_stars=20,
             observed_filtered, refined_filtered = remove_pairless_points(all_found_positions[i],
                                                                          all_no_distortion[i],
                                                                          max_distance=15)
-            final_observations.append(observed_filtered)
-            final_no_distortion.append(refined_filtered)
+            if (observed_filtered.ndim == 2 and refined_filtered.ndim == 2
+                    and len(observed_filtered) > 0 and len(refined_filtered) > 0):
+                final_observations.append(observed_filtered)
+                final_no_distortion.append(refined_filtered)
         final_observations = np.concatenate(final_observations, axis=0)
         final_refined = np.concatenate(final_no_distortion, axis=0)
 

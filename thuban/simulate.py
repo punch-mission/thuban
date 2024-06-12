@@ -8,10 +8,11 @@ from thuban.catalog import filter_for_visible_stars, find_catalog_in_image
 def simulate_star_image(catalog, wcs, img_shape, fwhm,
                         distortion_x_shift=None,
                         distortion_y_shift=None,
-                        mag_set=0, flux_set=500_000, noise_mean=25.0, noise_std=5.0):
+                        mag_set=0, flux_set=500_000, noise_mean=25.0, noise_std=5.0, dimmest_magnitude=8):
     sigma = fwhm / 2.355
 
-    stars = find_catalog_in_image(filter_for_visible_stars(catalog, dimmest_magnitude=8), wcs, img_shape)
+    stars = find_catalog_in_image(filter_for_visible_stars(catalog, dimmest_magnitude=dimmest_magnitude),
+                                  wcs, img_shape)
     star_mags = stars['Vmag']
 
     sources = QTable()

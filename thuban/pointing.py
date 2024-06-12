@@ -89,6 +89,11 @@ def _residual(params: Parameters,
     reduced_catalog = find_catalog_in_image(catalog, refined_wcs, image_shape=image_shape)
     refined_coords = np.stack([reduced_catalog['x_pix'], reduced_catalog['y_pix']], axis=-1)
 
+    edge = 100
+    image_bounds = (image_shape[0] - edge, image_shape[1] - edge)
+    refined_coords = np.array([c for c in refined_coords
+                      if (c[0] > edge) and (c[1] > edge) and (c[0] < image_bounds[0]) and (c[1] < image_bounds[1])])
+
     # repeat coordinates if there aren't enough stars to meet the n threshold and issue a warning
     if len(refined_coords) < n:
         refined_coords = np.concatenate([refined_coords, refined_coords[:(len(refined_coords) - n)]])
@@ -96,7 +101,11 @@ def _residual(params: Parameters,
                       "Try decreasing `num_stars` or increasing `dimmest_magnitude`.",
                       RepeatedStarWarning)
 
-    return [np.min(np.linalg.norm(observed_coords - coord, axis=-1)) for coord in refined_coords[:n]]
+    sigma = 3
+    out = np.array([np.min(np.linalg.norm(observed_coords - coord, axis=-1)) for coord in refined_coords[:n]])
+    mean, stdev = np.mean(out), np.std(out)
+    out[out > mean + sigma * stdev] = 0.0
+    return out
 
 
 def refine_pointing_wrapper(image, guess_wcs, file_num, observed_coords=None, catalog=None,
@@ -147,6 +156,7 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
         background = sep.Background(image, bw=background_width, bh=background_height)
         data_sub = image - background
         objects = sep.extract(data_sub, detection_threshold, err=background.globalrms)
+        objects = pd.DataFrame(objects).sort_values('flux')[-3*num_stars:]
         observed_coords = np.stack([objects["x"], objects["y"]], axis=-1)
 
     # set up the optimization
