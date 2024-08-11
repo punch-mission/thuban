@@ -5,7 +5,7 @@ from pathlib import Path
 
 import click
 import numpy as np
-import sep
+import sep_pjw as sep
 from astropy.io import fits
 from astropy.wcs import WCS
 from tqdm import tqdm
@@ -125,6 +125,7 @@ def determine_pointing_and_distortion(directory, byte_swap=True,  num_stars=20,
                 updated_wcs, _, solution, num_trials, file_index = future.result()
                 current_wcses[file_index] = updated_wcs
 
+
                 bg = sep.Background(data[file_index], bw=background, bh=background)
                 data_sub = data[file_index] - bg
                 objects = sep.extract(data_sub, threshold, err=bg.globalrms)
@@ -140,6 +141,7 @@ def determine_pointing_and_distortion(directory, byte_swap=True,  num_stars=20,
                 pbar.update(1)
 
         # log.append((all_corrected_positions, all_found_positions))
+        # TODO: move lower to fix counting of stars
         count = len(all_no_distortion)
         counts.append(count)
 
