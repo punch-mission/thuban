@@ -2,7 +2,7 @@ import warnings
 
 import numpy as np
 import pandas as pd
-import sep
+import sep_pjw as sep
 from astropy.wcs import WCS, utils
 from lmfit import Parameters, minimize
 
