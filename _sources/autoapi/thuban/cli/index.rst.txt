@@ -9,15 +9,6 @@ Functions
 
 .. autoapisummary::
 
-   thuban.cli.filter_for_visible_stars
-   thuban.cli.find_catalog_in_image
-   thuban.cli.load_hipparcos_catalog
-   thuban.cli.compute_distortion
-   thuban.cli.make_empty_distortion_model
-   thuban.cli.convert_cd_matrix_to_pc_matrix
-   thuban.cli.refine_pointing_wrapper
-   thuban.cli.find_celestial_wcs
-   thuban.cli.remove_pairless_points
    thuban.cli._flatten_list
    thuban.cli.get_files
    thuban.cli.open_files
@@ -26,108 +17,6 @@ Functions
 
 Module Contents
 ---------------
-
-.. py:function:: filter_for_visible_stars(catalog: pandas.DataFrame, dimmest_magnitude: float = 6) -> pandas.DataFrame
-
-   Filters to only include stars brighter than a given magnitude
-
-   :param catalog: a catalog loaded from `~thuban.catalog.load_hipparcos_catalog` or `~thuban.catalog.load_raw_hipparcos_catalog`
-   :type catalog: pd.DataFrame
-   :param dimmest_magnitude: the dimmest magnitude to keep
-   :type dimmest_magnitude: float
-
-   :returns: a catalog with stars dimmer than the `dimmest_magnitude` removed
-   :rtype: pd.DataFrame
-
-
-.. py:function:: find_catalog_in_image(catalog: pandas.DataFrame, wcs: astropy.wcs.WCS, image_shape: (int, int), mode: str = 'all') -> numpy.ndarray
-
-   Using the provided WCS converts the RA/DEC catalog into pixel coordinates
-
-   :param catalog: a catalog loaded from `~thuban.catalog.load_hipparcos_catalog` or `~thuban.catalog.load_raw_hipparcos_catalog`
-   :type catalog: pd.DataFrame
-   :param wcs: the world coordinate system of a given image
-   :type wcs: WCS
-   :param image_shape: the shape of the image array associated with the WCS, used to only consider stars with coordinates in image
-   :type image_shape: (int, int)
-   :param mode: either "all" or "wcs",
-                see
-                <https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel>
-   :type mode: str
-
-   :returns: pixel coordinates of stars in catalog that are present in the image
-   :rtype: np.ndarray
-
-
-.. py:function:: load_hipparcos_catalog(catalog_path: str = get_data('reduced_hip.csv')) -> pandas.DataFrame
-
-   Load the Hipparcos catalog from the local, reduced version. This version only keeps necessary columns.
-
-   :param catalog_path: path to the catalog, defaults to a provided version
-   :type catalog_path: str
-
-   :returns: loaded catalog with selected columns
-   :rtype: pd.DataFrame
-
-
-.. py:function:: compute_distortion(img_shape: (int, int), catalog_positions: numpy.ndarray, found_positions: numpy.ndarray, distortion_limit: float = 20, num_bins: int = 75, blur_sigma: float = 4, med_filter_size: int = 3) -> (astropy.wcs.DistortionLookupTable, astropy.wcs.DistortionLookupTable)
-
-   Given the derived catalog and actual star positions, determines the distortion
-
-   :param img_shape: shape of the image to compute the distortion for
-   :type img_shape: (int, int)
-   :param catalog_positions: pixel positions of the stars according to the catalog; (N, 2) in shape where N is number of stars
-   :type catalog_positions: np.ndarray
-   :param found_positions: pixel positions of the stars found by sep in the image; (N, 2) in shape where N is the number of stars
-   :type found_positions: np.ndarray
-   :param distortion_limit: stars with distortion greater than this are not considered as they're a mismatch instead of true distortion
-   :type distortion_limit: float
-   :param num_bins: number of histogram bins in the distortion model, i.e. the size of the distortion model is (num_bins, num_bins)
-   :type num_bins: int
-   :param blur_sigma: The number of pixels constituting one standard deviation of the
-                      Gaussian kernel. Set to 0 to disable Gaussian blurring.
-   :type blur_sigma: float
-   :param med_filter_size: The size of the local neighborhood to consider for median filtering.
-                           Set to 0 to disable median filtering.
-   :type med_filter_size: int
-
-   :returns: x and y distortion models determined from the star locations
-   :rtype: (DistortionLookupTable, DistortionLookupTable)
-
-
-.. py:function:: make_empty_distortion_model(num_bins: int, image: numpy.ndarray) -> (astropy.wcs.DistortionLookupTable, astropy.wcs.DistortionLookupTable)
-
-   Create an empty distortion table
-
-   :param num_bins: number of histogram bins in the distortion model, i.e. the size of the distortion model is (num_bins, num_bins)
-   :type num_bins: int
-   :param image: image to create a distortion model for
-   :type image: np.ndarray
-
-   :returns: x and y distortion models
-   :rtype: (DistortionLookupTable, DistortionLookupTable)
-
-
-.. py:function:: convert_cd_matrix_to_pc_matrix(wcs)
-
-.. py:function:: refine_pointing_wrapper(image, guess_wcs, file_num, observed_coords=None, catalog=None, background_width=16, background_height=16, detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1, dimmest_magnitude=6.0, method='leastsq')
-
-.. py:function:: find_celestial_wcs(hdul)
-
-.. py:function:: remove_pairless_points(a: numpy.ndarray, b: numpy.ndarray, max_distance=20) -> (numpy.ndarray, numpy.ndarray)
-
-   Given two lists (a and b), remove points that don't have a neighbor within `max_distance` in the other set
-
-   :param a: an array of points [N, d] where N is the number of points and d is the dimensionality
-   :type a: np.ndarray
-   :param b: an array of points [N, d] where N is the number of points and d is the dimensionality
-   :type b: np.ndarray
-   :param max_distance: points without a neighbor in the other set within `max_distance` will be removed
-   :type max_distance: float
-
-   :returns: point sets with pairless points removed
-   :rtype: (np.ndarray, np.ndarray)
-
 
 .. py:function:: _flatten_list(xss)
 

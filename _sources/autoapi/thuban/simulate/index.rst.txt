@@ -9,45 +9,11 @@ Functions
 
 .. autoapisummary::
 
-   thuban.simulate.filter_for_visible_stars
-   thuban.simulate.find_catalog_in_image
    thuban.simulate.simulate_star_image
 
 
 Module Contents
 ---------------
-
-.. py:function:: filter_for_visible_stars(catalog: pandas.DataFrame, dimmest_magnitude: float = 6) -> pandas.DataFrame
-
-   Filters to only include stars brighter than a given magnitude
-
-   :param catalog: a catalog loaded from `~thuban.catalog.load_hipparcos_catalog` or `~thuban.catalog.load_raw_hipparcos_catalog`
-   :type catalog: pd.DataFrame
-   :param dimmest_magnitude: the dimmest magnitude to keep
-   :type dimmest_magnitude: float
-
-   :returns: a catalog with stars dimmer than the `dimmest_magnitude` removed
-   :rtype: pd.DataFrame
-
-
-.. py:function:: find_catalog_in_image(catalog: pandas.DataFrame, wcs: astropy.wcs.WCS, image_shape: (int, int), mode: str = 'all') -> numpy.ndarray
-
-   Using the provided WCS converts the RA/DEC catalog into pixel coordinates
-
-   :param catalog: a catalog loaded from `~thuban.catalog.load_hipparcos_catalog` or `~thuban.catalog.load_raw_hipparcos_catalog`
-   :type catalog: pd.DataFrame
-   :param wcs: the world coordinate system of a given image
-   :type wcs: WCS
-   :param image_shape: the shape of the image array associated with the WCS, used to only consider stars with coordinates in image
-   :type image_shape: (int, int)
-   :param mode: either "all" or "wcs",
-                see
-                <https://docs.astropy.org/en/stable/api/astropy.coordinates.SkyCoord.html#astropy.coordinates.SkyCoord.to_pixel>
-   :type mode: str
-
-   :returns: pixel coordinates of stars in catalog that are present in the image
-   :rtype: np.ndarray
-
 
 .. py:function:: simulate_star_image(catalog, wcs, img_shape, fwhm, distortion_x_shift=None, distortion_y_shift=None, mag_set=0, flux_set=500000, noise_mean=25.0, noise_std=5.0, dimmest_magnitude=8)
 
