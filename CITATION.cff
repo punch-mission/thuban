@@ -5,7 +5,7 @@ authors:
   given-names: "J. Marcus"
   orcid: "https://orcid.org/0000-0003-3410-7650"
 title: "thuban"
-version: 0.0.1
-# doi: 10.5281/zenodo.7392170
+version: 0.0.2
+doi: 10.5281/zenodo.13340312
 date-released: 2024-08-18
 url: "https://github.com/punch-mission/thuban"
