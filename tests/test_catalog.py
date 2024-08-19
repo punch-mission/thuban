@@ -32,13 +32,13 @@ def test_find_catalog_in_image():
     w.wcs.set_pv([(2, 1, 45.0)])
     reduced_catalog = find_catalog_in_image(catalog, w, image_shape=(2048, 1024))
     assert len(reduced_catalog) == 13_459
-    assert np.all(reduced_catalog['x_pix'] >= 0)
-    assert np.all(reduced_catalog['x_pix'] < 2048)
-    assert np.all(reduced_catalog['y_pix'] >= 0)
-    assert np.all(reduced_catalog['y_pix'] < 1024)
+    assert np.all(reduced_catalog["x_pix"] >= 0)
+    assert np.all(reduced_catalog["x_pix"] < 2048)
+    assert np.all(reduced_catalog["y_pix"] >= 0)
+    assert np.all(reduced_catalog["y_pix"] < 1024)
 
 
-@pytest.mark.slow()
+@pytest.mark.slow
 def test_download_catalog():
     """tests that the full catalog downloads"""
     raw_hipparcos = load_raw_hipparcos_catalog()

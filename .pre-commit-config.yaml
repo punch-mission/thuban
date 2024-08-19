@@ -2,10 +2,13 @@ exclude: "\\.asdf$"
 repos:
   # This should be before any formatting hooks like isort
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.1.7"
+    # Ruff version.
+    rev: v0.6.1
     hooks:
+      # Run the linter.
       - id: ruff
-        args: ["--fix"]
+        types_or: [ python, pyi ]
+        args: [ --fix ]
   - repo: https://github.com/PyCQA/isort
     rev: 5.13.0
     hooks:
