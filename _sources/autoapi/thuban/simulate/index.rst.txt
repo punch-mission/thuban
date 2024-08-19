@@ -15,5 +15,5 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: simulate_star_image(catalog, wcs, img_shape, fwhm, distortion_x_shift=None, distortion_y_shift=None, mag_set=0, flux_set=500000, noise_mean=25.0, noise_std=5.0, dimmest_magnitude=8)
+.. py:function:: simulate_star_image(wcs, img_shape, fwhm, wcs_mode: str = 'all', mag_set=0, flux_set=500000, noise_mean: float | None = 25.0, noise_std: float | None = 5.0, dimmest_magnitude=8)
 

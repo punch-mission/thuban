@@ -24,7 +24,7 @@ Module Contents
 
 .. py:function:: calculate_pc_matrix(crota: float, cdelt: (float, float)) -> numpy.ndarray
 
-   Calculate a PC matrix given CROTA and CDELT
+   Calculate a PC matrix given CROTA and CDELT.
 
    :param crota: rotation angle from the WCS
    :type crota: float
