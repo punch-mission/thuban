@@ -29,7 +29,8 @@ def convert_cd_matrix_to_pc_matrix(wcs):
 
 
 def calculate_pc_matrix(crota: float, cdelt: (float, float)) -> np.ndarray:
-    """Calculate a PC matrix given CROTA and CDELT
+    """
+    Calculate a PC matrix given CROTA and CDELT.
 
     Parameters
     ----------
@@ -42,13 +43,15 @@ def calculate_pc_matrix(crota: float, cdelt: (float, float)) -> np.ndarray:
     -------
     np.ndarray
         PC matrix
+
     """
     return np.array(
         [
-            [np.cos(crota), np.sin(crota) * (cdelt[1] / cdelt[0])],
-            [-np.sin(crota) * (cdelt[0] / cdelt[1]), np.cos(crota)],
-        ]
+            [np.cos(crota), np.sin(crota) * (cdelt[0] / cdelt[1])],
+            [-np.sin(crota) * (cdelt[1] / cdelt[0]), np.cos(crota)],
+        ],
     )
+
 
 
 def _residual(params: Parameters,
@@ -89,7 +92,7 @@ def _residual(params: Parameters,
     reduced_catalog = find_catalog_in_image(catalog, refined_wcs, image_shape=image_shape)
     refined_coords = np.stack([reduced_catalog['x_pix'], reduced_catalog['y_pix']], axis=-1)
 
-    edge = 100
+    edge = 300
     image_bounds = (image_shape[0] - edge, image_shape[1] - edge)
     refined_coords = np.array([c for c in refined_coords
                       if (c[0] > edge) and (c[1] > edge) and (c[0] < image_bounds[0]) and (c[1] < image_bounds[1])])
@@ -161,7 +164,9 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
 
     # set up the optimization
     params = Parameters()
-    params.add("crota", value=np.arctan2(guess_wcs.wcs.pc[1, 0], guess_wcs.wcs.pc[0, 0]), min=0, max=2 * np.pi)
+    delta_ratio = guess_wcs.wcs.cdelt[0] / guess_wcs.wcs.cdelt[1]
+    initial_crota = np.arctan2(guess_wcs.wcs.pc[0, 1]/delta_ratio, guess_wcs.wcs.pc[0, 0])
+    params.add("crota", value=initial_crota, min=-np.pi, max=np.pi)
     params.add("crval1", value=guess_wcs.wcs.crval[0], min=-180, max=180, vary=True)
     params.add("crval2", value=guess_wcs.wcs.crval[1], min=-90, max=90, vary=True)
 
