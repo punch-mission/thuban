@@ -1,9 +1,11 @@
 import warnings
+from typing import Callable
 
 import numpy as np
 import pandas as pd
 import sep_pjw as sep
 from astropy.wcs import WCS, utils
+import astropy.units as u
 from lmfit import Parameters, minimize
 
 from thuban.catalog import (filter_for_visible_stars, find_catalog_in_image,
@@ -47,11 +49,10 @@ def calculate_pc_matrix(crota: float, cdelt: (float, float)) -> np.ndarray:
     """
     return np.array(
         [
-            [np.cos(crota), np.sin(crota) * (cdelt[0] / cdelt[1])],
-            [-np.sin(crota) * (cdelt[1] / cdelt[0]), np.cos(crota)],
+            [np.cos(crota), -np.sin(crota) * (cdelt[0] / cdelt[1])],
+            [np.sin(crota) * (cdelt[1] / cdelt[0]), np.cos(crota)],
         ],
     )
-
 
 
 def _residual(params: Parameters,
@@ -59,7 +60,10 @@ def _residual(params: Parameters,
               catalog: pd.DataFrame,
               guess_wcs: WCS,
               n: int,
-              image_shape: (int, int)):
+              image_shape: (int, int),
+              edge: int = 100,
+              sigma: float = 3.0,
+              mask: Callable = None):
     """Residual used when optimizing the pointing
 
     Parameters
@@ -86,13 +90,13 @@ def _residual(params: Parameters,
     refined_wcs.wcs.crpix = guess_wcs.wcs.crpix
     refined_wcs.wcs.crval = (params["crval1"].value, params["crval2"].value)
     refined_wcs.wcs.pc = calculate_pc_matrix(params["crota"], refined_wcs.wcs.cdelt)
-    refined_wcs.cpdis1 = guess_wcs.cpdis1   # TODO what if there is no distortion?
+    refined_wcs.cpdis1 = guess_wcs.cpdis1
     refined_wcs.cpdis2 = guess_wcs.cpdis2
+    refined_wcs.wcs.set_pv(guess_wcs.wcs.get_pv())
 
-    reduced_catalog = find_catalog_in_image(catalog, refined_wcs, image_shape=image_shape)
+    reduced_catalog = find_catalog_in_image(catalog, refined_wcs, image_shape=image_shape, mask=mask)
     refined_coords = np.stack([reduced_catalog['x_pix'], reduced_catalog['y_pix']], axis=-1)
 
-    edge = 300
     image_bounds = (image_shape[0] - edge, image_shape[1] - edge)
     refined_coords = np.array([c for c in refined_coords
                       if (c[0] > edge) and (c[1] > edge) and (c[0] < image_bounds[0]) and (c[1] < image_bounds[1])])
@@ -104,10 +108,9 @@ def _residual(params: Parameters,
                       "Try decreasing `num_stars` or increasing `dimmest_magnitude`.",
                       RepeatedStarWarning)
 
-    sigma = 3
     out = np.array([np.min(np.linalg.norm(observed_coords - coord, axis=-1)) for coord in refined_coords[:n]])
-    mean, stdev = np.mean(out), np.std(out)
-    out[out > mean + sigma * stdev] = 0.0
+    median, stdev = np.median(out), np.std(out)
+    out[out > median + (sigma * stdev)] = 0.0  # TODO: should this be zero?
     return out
 
 
@@ -125,10 +128,16 @@ def refine_pointing_wrapper(image, guess_wcs, file_num, observed_coords=None, ca
     return new_wcs, observed_coords, solution, trial_num, file_num
 
 
+def extract_crota_from_wcs(wcs: WCS) -> tuple[float, float]:
+    """Extract CROTA from a WCS."""
+    delta_ratio = wcs.wcs.cdelt[1] / wcs.wcs.cdelt[0]
+    return np.arctan2(wcs.wcs.pc[1, 0]/delta_ratio, wcs.wcs.pc[0, 0]) * u.rad
+
+
 def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
                     background_width=16, background_height=16,
                     detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1,
-                    dimmest_magnitude=6.0, method='leastsq'):
+                    dimmest_magnitude=6.0, method='leastsq', edge=100, sigma=3.0, mask=None):
     """ Refine the pointing for an image
 
     Parameters
@@ -159,14 +168,15 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
         background = sep.Background(image, bw=background_width, bh=background_height)
         data_sub = image - background
         objects = sep.extract(data_sub, detection_threshold, err=background.globalrms)
-        objects = pd.DataFrame(objects).sort_values('flux')[-3*num_stars:]
+        objects = pd.DataFrame(objects).sort_values('flux')
         observed_coords = np.stack([objects["x"], objects["y"]], axis=-1)
-
+        if mask is not None:
+            observed_coords = observed_coords[mask(objects['x'], objects['y'])]
+        observed_coords = observed_coords[-3*num_stars:]
     # set up the optimization
     params = Parameters()
-    delta_ratio = guess_wcs.wcs.cdelt[0] / guess_wcs.wcs.cdelt[1]
-    initial_crota = np.arctan2(guess_wcs.wcs.pc[0, 1]/delta_ratio, guess_wcs.wcs.pc[0, 0])
-    params.add("crota", value=initial_crota, min=-np.pi, max=np.pi)
+    initial_crota = extract_crota_from_wcs(guess_wcs)
+    params.add("crota", value=initial_crota.to(u.rad).value, min=-np.pi, max=np.pi)
     params.add("crval1", value=guess_wcs.wcs.crval[0], min=-180, max=180, vary=True)
     params.add("crval2", value=guess_wcs.wcs.crval[1], min=-90, max=90, vary=True)
 
@@ -176,7 +186,7 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
     while trial_num < max_trials:
         try:
             out = minimize(_residual, params, method=method,
-                           args=(observed_coords, catalog, guess_wcs, num_stars, image.shape))
+                           args=(observed_coords, catalog, guess_wcs, num_stars, image.shape, edge, sigma, mask))
             chisqr = out.chisqr
             result_minimizations.append(out)
         except IndexError:
@@ -195,6 +205,7 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
             result_wcs.wcs.pc = calculate_pc_matrix(out.params["crota"], result_wcs.wcs.cdelt)
             result_wcs.cpdis1 = guess_wcs.cpdis1  # TODO: what if there is no known distortion
             result_wcs.cpdis2 = guess_wcs.cpdis2
+            result_wcs.wcs.set_pv(guess_wcs.wcs.get_pv())
         result_wcses.append(result_wcs)
         trial_num += 1
         if chisqr < chisqr_threshold:

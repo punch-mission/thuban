@@ -1,4 +1,5 @@
 import os
+from typing import Callable
 
 import astropy.units as u
 import numpy as np
@@ -163,7 +164,7 @@ def filter_for_visible_stars(catalog: pd.DataFrame, dimmest_magnitude: float = 6
 
 
 def find_catalog_in_image(
-    catalog: pd.DataFrame, wcs: WCS, image_shape: (int, int),
+    catalog: pd.DataFrame, wcs: WCS, image_shape: (int, int), mask: Callable = None,
         mode: str = "all"
 ) -> np.ndarray:
     """Using the provided WCS converts the RA/DEC catalog into pixel coordinates
@@ -195,6 +196,10 @@ def find_catalog_in_image(
     except NoConvergence as e:
         xs, ys = e.best_solution[:, 0], e.best_solution[:, 1]
     bounds_mask = (0 <= xs) * (xs < image_shape[0]) * (0 <= ys) * (ys < image_shape[1])
+
+    if mask is not None:
+        bounds_mask *= mask(xs, ys)
+
     reduced_catalog = catalog[bounds_mask].copy()
     reduced_catalog["x_pix"] = xs[bounds_mask]
     reduced_catalog['y_pix'] = ys[bounds_mask]
