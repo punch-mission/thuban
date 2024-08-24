@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="../../../_static/favicon.ico" rel="icon" type="image/x-icon">
-    <title>thuban.catalog &#8212; thuban 0.0.2 documentation</title>
+    <title>thuban.catalog &#8212; thuban 0.0.3 documentation</title>
   
   
   
@@ -36,7 +36,7 @@
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
   <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
-    <script src="../../../_static/documentation_options.js?v=e3a6060d"></script>
+    <script src="../../../_static/documentation_options.js?v=47de8214"></script>
     <script src="../../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/thuban/catalog/index';</script>
@@ -398,7 +398,7 @@ document.write(`
 <tr class="row-odd"><td><p><a class="reference internal" href="#thuban.catalog.filter_for_visible_stars" title="thuban.catalog.filter_for_visible_stars"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filter_for_visible_stars</span></code></a>(→ pandas.DataFrame)</p></td>
 <td><p>Filters to only include stars brighter than a given magnitude</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#thuban.catalog.find_catalog_in_image" title="thuban.catalog.find_catalog_in_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_catalog_in_image</span></code></a>(, mode)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#thuban.catalog.find_catalog_in_image" title="thuban.catalog.find_catalog_in_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_catalog_in_image</span></code></a>(, mask, mode)</p></td>
 <td><p>Using the provided WCS converts the RA/DEC catalog into pixel coordinates</p></td>
 </tr>
 </tbody>
@@ -468,7 +468,7 @@ document.write(`
 
 <dl class="py function">
 <dt class="sig sig-object py" id="thuban.catalog.find_catalog_in_image">
-<span class="sig-prename descclassname"><span class="pre">thuban.catalog.</span></span><span class="sig-name descname"><span class="pre">find_catalog_in_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">astropy.wcs.WCS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#thuban.catalog.find_catalog_in_image" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">thuban.catalog.</span></span><span class="sig-name descname"><span class="pre">find_catalog_in_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wcs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">astropy.wcs.WCS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#thuban.catalog.find_catalog_in_image" title="Link to this definition">#</a></dt>
 <dd><p>Using the provided WCS converts the RA/DEC catalog into pixel coordinates</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

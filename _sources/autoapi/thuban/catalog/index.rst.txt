@@ -65,7 +65,7 @@ Module Contents
    :rtype: pd.DataFrame
 
 
-.. py:function:: find_catalog_in_image(catalog: pandas.DataFrame, wcs: astropy.wcs.WCS, image_shape: (int, int), mode: str = 'all') -> numpy.ndarray
+.. py:function:: find_catalog_in_image(catalog: pandas.DataFrame, wcs: astropy.wcs.WCS, image_shape: (int, int), mask: Callable = None, mode: str = 'all') -> numpy.ndarray
 
    Using the provided WCS converts the RA/DEC catalog into pixel coordinates
 

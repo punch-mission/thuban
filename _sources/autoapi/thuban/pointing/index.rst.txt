@@ -13,6 +13,7 @@ Functions
    thuban.pointing.calculate_pc_matrix
    thuban.pointing._residual
    thuban.pointing.refine_pointing_wrapper
+   thuban.pointing.extract_crota_from_wcs
    thuban.pointing.refine_pointing
    thuban.pointing.get_star_lists
 
@@ -35,7 +36,7 @@ Module Contents
    :rtype: np.ndarray
 
 
-.. py:function:: _residual(params: lmfit.Parameters, observed_coords: numpy.ndarray, catalog: pandas.DataFrame, guess_wcs: astropy.wcs.WCS, n: int, image_shape: (int, int))
+.. py:function:: _residual(params: lmfit.Parameters, observed_coords: numpy.ndarray, catalog: pandas.DataFrame, guess_wcs: astropy.wcs.WCS, n: int, image_shape: (int, int), edge: int = 100, sigma: float = 3.0, mask: Callable = None)
 
    Residual used when optimizing the pointing
 
@@ -56,7 +57,12 @@ Module Contents
 
 .. py:function:: refine_pointing_wrapper(image, guess_wcs, file_num, observed_coords=None, catalog=None, background_width=16, background_height=16, detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1, dimmest_magnitude=6.0, method='leastsq')
 
-.. py:function:: refine_pointing(image, guess_wcs, observed_coords=None, catalog=None, background_width=16, background_height=16, detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1, dimmest_magnitude=6.0, method='leastsq')
+.. py:function:: extract_crota_from_wcs(wcs: astropy.wcs.WCS) -> tuple[float, float]
+
+   Extract CROTA from a WCS.
+
+
+.. py:function:: refine_pointing(image, guess_wcs, observed_coords=None, catalog=None, background_width=16, background_height=16, detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1, dimmest_magnitude=6.0, method='leastsq', edge=100, sigma=3.0, mask=None)
 
    Refine the pointing for an image
 
