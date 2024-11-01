@@ -1,11 +1,11 @@
 [build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8", "wheel"]
+build-backend = "setuptools.build_meta"
 
-requires = ["setuptools",
-            "wheel"]
 
 [project]
 name = "thuban"
-version = "0.0.3"
+dynamic = ["version"]
 dependencies = ["numpy",
     "astropy",
     "matplotlib",
@@ -46,6 +46,8 @@ Documentation = "https://readthedocs.org"
 Repository = "https://github.com/punch-mission/thuban.git"
 "Bug Tracker" = "https://github.com/punch-mission/thuban/issues"
 Changelog = "https://github.com/punch-mission/thuban/blob/main/CHANGELOG.md"
+
+[tool.setuptools_scm]
 
 [tool.setuptools]
 packages = ["thuban"]
