@@ -1,11 +1,11 @@
 import warnings
 from typing import Callable
 
+import astropy.units as u
 import numpy as np
 import pandas as pd
 import sep_pjw as sep
 from astropy.wcs import WCS, utils
-import astropy.units as u
 from lmfit import Parameters, minimize
 
 from thuban.catalog import (filter_for_visible_stars, find_catalog_in_image,
@@ -63,6 +63,7 @@ def _residual(params: Parameters,
               image_shape: (int, int),
               edge: int = 100,
               sigma: float = 3.0,
+              max_error: float = 15,
               mask: Callable = None):
     """Residual used when optimizing the pointing
 
@@ -111,20 +112,23 @@ def _residual(params: Parameters,
     out = np.array([np.min(np.linalg.norm(observed_coords - coord, axis=-1)) for coord in refined_coords[:n]])
     median, stdev = np.median(out), np.std(out)
     out[out > median + (sigma * stdev)] = 0.0  # TODO: should this be zero?
+    out[out > max_error] = 0.0  # TODO: should this be zero?
     return out
 
 
 def refine_pointing_wrapper(image, guess_wcs, file_num, observed_coords=None, catalog=None,
                     background_width=16, background_height=16,
                     detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1,
-                    dimmest_magnitude=6.0, method='leastsq'):
+                    dimmest_magnitude=6.0, method='leastsq', ra_tolerance=10, dec_tolerance=5, max_error=15):
     new_wcs, observed_coords, solution, trial_num = refine_pointing(image,
                                                                     guess_wcs,
                                                                     observed_coords=observed_coords, catalog=catalog,
                     background_width=background_width, background_height=background_height,
                     detection_threshold=detection_threshold, num_stars=num_stars, max_trials=max_trials,
                             chisqr_threshold=chisqr_threshold,
-                    dimmest_magnitude=dimmest_magnitude, method=method)
+                    dimmest_magnitude=dimmest_magnitude, method=method,
+                                                                    ra_tolerance=ra_tolerance,
+                                                                    dec_tolerance=dec_tolerance, max_error=max_error)
     return new_wcs, observed_coords, solution, trial_num, file_num
 
 
@@ -137,7 +141,8 @@ def extract_crota_from_wcs(wcs: WCS) -> tuple[float, float]:
 def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
                     background_width=16, background_height=16,
                     detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1,
-                    dimmest_magnitude=6.0, method='leastsq', edge=100, sigma=3.0, mask=None):
+                    dimmest_magnitude=6.0, method='leastsq', edge=100, sigma=3.0, mask=None,
+                    ra_tolerance=10, dec_tolerance=5, max_error=15):
     """ Refine the pointing for an image
 
     Parameters
@@ -172,21 +177,40 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
         observed_coords = np.stack([objects["x"], objects["y"]], axis=-1)
         if mask is not None:
             observed_coords = observed_coords[mask(objects['x'], objects['y'])]
+
+        image_shape = image.shape
+        reduced_catalog = find_catalog_in_image(catalog, guess_wcs, image_shape=image_shape, mask=mask)
+        refined_coords = np.stack([reduced_catalog['x_pix'], reduced_catalog['y_pix']], axis=-1)
+        # print("catalog found", len(refined_coords), refined_coords)
+
+        image_bounds = (image_shape[0] - edge, image_shape[1] - edge)
+        refined_coords = np.array([c for c in refined_coords
+                                   if (c[0] > edge) and (c[1] > edge) and (c[0] < image_bounds[0]) and (
+                                               c[1] < image_bounds[1])])
+
+        distances = np.array([np.min(np.linalg.norm(refined_coords - coord, axis=-1)) for coord in observed_coords])
+        observed_coords = observed_coords[distances < max_error]
         observed_coords = observed_coords[-3*num_stars:]
     # set up the optimization
     params = Parameters()
     initial_crota = extract_crota_from_wcs(guess_wcs)
     params.add("crota", value=initial_crota.to(u.rad).value, min=-np.pi, max=np.pi)
-    params.add("crval1", value=guess_wcs.wcs.crval[0], min=-180, max=180, vary=True)
-    params.add("crval2", value=guess_wcs.wcs.crval[1], min=-90, max=90, vary=True)
+    params.add("crval1", value=guess_wcs.wcs.crval[0],
+               min=guess_wcs.wcs.crval[0]-ra_tolerance,
+               max=guess_wcs.wcs.crval[0]+ra_tolerance, vary=True)
+    params.add("crval2", value=guess_wcs.wcs.crval[1],
+               min=guess_wcs.wcs.crval[1]-dec_tolerance,
+               max=guess_wcs.wcs.crval[1]+dec_tolerance, vary=True)
 
+    # return guess_wcs, observed_coords, None, None
     # optimize
     trial_num = 0
     result_wcses, result_minimizations = [], []
     while trial_num < max_trials:
         try:
             out = minimize(_residual, params, method=method,
-                           args=(observed_coords, catalog, guess_wcs, num_stars, image.shape, edge, sigma, mask))
+                           args=(observed_coords, catalog, guess_wcs,
+                                 num_stars, image.shape, edge, sigma, max_error, mask))
             chisqr = out.chisqr
             result_minimizations.append(out)
         except IndexError:
