@@ -1,3 +1,4 @@
+import copy
 import warnings
 from typing import Callable
 
@@ -84,16 +85,9 @@ def _residual(params: Parameters,
     np.ndarray
         residual
     """
-    refined_wcs = WCS(naxis=2)
-    refined_wcs.wcs.ctype = guess_wcs.wcs.ctype
-    refined_wcs.wcs.cunit = guess_wcs.wcs.cunit
-    refined_wcs.wcs.cdelt = guess_wcs.wcs.cdelt
-    refined_wcs.wcs.crpix = guess_wcs.wcs.crpix
+    refined_wcs = guess_wcs # copy.deepcopy(guess_wcs)
     refined_wcs.wcs.crval = (params["crval1"].value, params["crval2"].value)
     refined_wcs.wcs.pc = calculate_pc_matrix(params["crota"], refined_wcs.wcs.cdelt)
-    refined_wcs.cpdis1 = guess_wcs.cpdis1
-    refined_wcs.cpdis2 = guess_wcs.cpdis2
-    refined_wcs.wcs.set_pv(guess_wcs.wcs.get_pv())
 
     reduced_catalog = find_catalog_in_image(catalog, refined_wcs, image_shape=image_shape, mask=mask)
     refined_coords = np.stack([reduced_catalog['x_pix'], reduced_catalog['y_pix']], axis=-1)
@@ -165,6 +159,8 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
     -------
 
     """
+    initial_wcs = copy.deepcopy(guess_wcs)
+
     if catalog is None:
         catalog = filter_for_visible_stars(load_hipparcos_catalog(), dimmest_magnitude=dimmest_magnitude)
 
@@ -214,22 +210,15 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
             chisqr = out.chisqr
             result_minimizations.append(out)
         except IndexError:
-            result_wcs = guess_wcs
+            result_wcs = initial_wcs
             chisqr = np.inf
             warnings.warn("guess_wcs returned because pointing minimization did not converge properly.",
                           ConvergenceWarning)
         else:
             # construct the result
-            result_wcs = WCS(naxis=2)
-            result_wcs.wcs.ctype = guess_wcs.wcs.ctype
-            result_wcs.wcs.cunit = guess_wcs.wcs.cunit
-            result_wcs.wcs.cdelt = guess_wcs.wcs.cdelt
-            result_wcs.wcs.crpix = guess_wcs.wcs.crpix
+            result_wcs = copy.deepcopy(initial_wcs)
             result_wcs.wcs.crval = (out.params["crval1"].value, out.params["crval2"].value)
             result_wcs.wcs.pc = calculate_pc_matrix(out.params["crota"], result_wcs.wcs.cdelt)
-            result_wcs.cpdis1 = guess_wcs.cpdis1  # TODO: what if there is no known distortion
-            result_wcs.cpdis2 = guess_wcs.cpdis2
-            result_wcs.wcs.set_pv(guess_wcs.wcs.get_pv())
         result_wcses.append(result_wcs)
         trial_num += 1
         if chisqr < chisqr_threshold:

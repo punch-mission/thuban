@@ -195,7 +195,7 @@ def find_catalog_in_image(
         ).to_pixel(wcs, mode=mode)
     except NoConvergence as e:
         xs, ys = e.best_solution[:, 0], e.best_solution[:, 1]
-    bounds_mask = (0 <= xs) * (xs < image_shape[0]) * (0 <= ys) * (ys < image_shape[1])
+    bounds_mask = (0 <= xs) * (xs < image_shape[1]) * (0 <= ys) * (ys < image_shape[0])
 
     if mask is not None:
         bounds_mask *= mask(xs, ys)

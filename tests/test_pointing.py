@@ -1,10 +1,29 @@
-# from astropy.io import fits
-# from astropy.wcs import WCS
-# import matplotlib.pyplot as plt
-#
-# from thuban.pointing import refine_pointing
-# from thuban.catalog import load_hipparcos_catalog, filter_for_visible_stars, find_catalog_in_image
-#
+import numpy as np
+from astropy.wcs import WCS
+
+from thuban.pointing import refine_pointing
+from thuban.simulate import simulate_star_image
+
+
+def test_pointing_solving():
+    shape = (512, 1024)
+    w = WCS(naxis=2)
+    w.wcs.crpix = [shape[1] / 2 + .5, shape[0] / 2 + .5]
+    w.wcs.cdelt = np.array([-0.1, 0.1])
+    w.wcs.crval = [54, 42]
+    w.wcs.ctype = ["RA", "DEC"]
+    w.wcs.cunit = "deg", "deg"
+
+    image, sources = simulate_star_image(w, shape, 3.0, flux_set=1E-8, noise_mean=None, noise_std=None)
+
+    error_w = w.deepcopy()
+    error_w.wcs.crval = [53, 41]
+
+    refined_wcs, observed_coords, minimizations, trial_num = refine_pointing(image, error_w)
+
+    print(refined_wcs)
+
+
 #
 # def test_pointing_solving():
 #     path = "/Users/jhughes/Desktop/data/data_star_removal/hi1_bgsub_psf_repoint2/20220913_012831_s4h1A.fts"
