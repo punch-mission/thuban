@@ -10,12 +10,12 @@ dependencies = ["numpy",
     "astropy",
     "matplotlib",
     "pandas",
-    "sep-pjw",
     "scipy",
     "scikit-learn",
     "lmfit",
     "tqdm",
-    "click"
+    "click",
+    "photutils"
 ]
 requires-python = ">=3.9"
 authors = [

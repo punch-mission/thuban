@@ -5,9 +5,10 @@ from typing import Callable
 import astropy.units as u
 import numpy as np
 import pandas as pd
-import sep_pjw as sep
+from astropy.stats import sigma_clipped_stats
 from astropy.wcs import WCS, utils
 from lmfit import Parameters, minimize
+from photutils.detection import IRAFStarFinder
 
 from thuban.catalog import (filter_for_visible_stars, find_catalog_in_image,
                             load_hipparcos_catalog)
@@ -133,9 +134,8 @@ def extract_crota_from_wcs(wcs: WCS) -> tuple[float, float]:
 
 
 def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
-                    background_width=16, background_height=16,
-                    detection_threshold=5, num_stars=30, max_trials=15, chisqr_threshold=0.1,
-                    dimmest_magnitude=6.0, method='leastsq', edge=100, sigma=3.0, mask=None,
+                    star_finder=None, num_stars=30, max_trials=15, chisqr_threshold=0.1,
+                    dimmest_magnitude=6.0, method='leastsq', edge=100, sigma=3.0,
                     ra_tolerance=10, dec_tolerance=5, max_error=15):
     """ Refine the pointing for an image
 
@@ -165,14 +165,19 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
         catalog = filter_for_visible_stars(load_hipparcos_catalog(), dimmest_magnitude=dimmest_magnitude)
 
     if observed_coords is None:
+        mean, median, std = sigma_clipped_stats(image, sigma=3.0)
+        print(np.array((mean, median, std)))
+
+        if star_finder is None:
+            star_finder = IRAFStarFinder(fwhm=3.5, threshold=1. * std)
+
+        sources = star_finder(image - median)
+
         # find the stars in the background removed image
-        background = sep.Background(image, bw=background_width, bh=background_height)
-        data_sub = image - background
-        objects = sep.extract(data_sub, detection_threshold, err=background.globalrms)
-        objects = pd.DataFrame(objects).sort_values('flux')
-        observed_coords = np.stack([objects["x"], objects["y"]], axis=-1)
-        if mask is not None:
-            observed_coords = observed_coords[mask(objects['x'], objects['y'])]
+        sources.sort('flux')
+        observed_coords = np.stack([sources["xcentroid"], sources["ycentroid"]], axis=-1)
+
+        mask = None
 
         image_shape = image.shape
         reduced_catalog = find_catalog_in_image(catalog, guess_wcs, image_shape=image_shape, mask=mask)

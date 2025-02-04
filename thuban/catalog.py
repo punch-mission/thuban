@@ -204,3 +204,33 @@ def find_catalog_in_image(
     reduced_catalog["x_pix"] = xs[bounds_mask]
     reduced_catalog['y_pix'] = ys[bounds_mask]
     return reduced_catalog
+
+def match_catalog_to_sources(catalog, wcs, image_shape, sources, mode='all', allowed_distance=5):
+    try:
+        xs, ys = SkyCoord(
+            ra=np.array(catalog["RAdeg"]) * u.degree,
+            dec=np.array(catalog["DEdeg"]) * u.degree,
+            distance=np.array(catalog["distance"]) * u.parsec,
+        ).to_pixel(wcs, mode=mode)
+    except NoConvergence as e:
+        xs, ys = e.best_solution[:, 0], e.best_solution[:, 1]
+    bounds_mask = (0 <= xs) * (xs < image_shape[1]) * (0 <= ys) * (ys < image_shape[0])
+
+    reduced_catalog = catalog[bounds_mask].copy()
+    reduced_catalog["wcs_x_pix"] = xs[bounds_mask]
+    reduced_catalog['wcs_y_pix'] = ys[bounds_mask]
+
+    wcs_sources = np.stack([reduced_catalog['wcs_x_pix'], reduced_catalog['wcs_y_pix']], axis=0)
+    match_index = []
+    for source in sources:
+        xy = np.repeat(np.array([source['xcentroid'], source['ycentroid']]),
+                       wcs_sources.shape[1]).reshape(wcs_sources.shape)
+        distances = np.sqrt(np.sum(np.square(xy - wcs_sources), axis=0))
+        best_match = np.argmin(distances)
+        if distances[best_match] < allowed_distance:
+            match_index.append(reduced_catalog['HIP'].iloc[best_match])
+        else:
+            match_index.append(-1)
+    sources["HIP"] = match_index
+
+    return sources[sources["HIP"] != -1]
