@@ -1,5 +1,6 @@
 import numpy as np
-from astropy.wcs import WCS
+from astropy import units as u
+from astropy.wcs import WCS, utils
 from sklearn.neighbors import KDTree
 
 
@@ -60,35 +61,52 @@ def find_celestial_wcs(hdul):
     raise ValueError("No celestial WCS found")
 
 
-def sparsify(coords: np.ndarray, radius: float) -> np.ndarray:
+def convert_cd_matrix_to_pc_matrix(wcs):
+    """Convert a WCS with a CD matrix to one with a PC matrix.
+
+    If it already has a PC matrix, return a copy of the original WCS. """
+    if hasattr(wcs.wcs, 'cd'):
+        cdelt1, cdelt2 = utils.proj_plane_pixel_scales(wcs)
+        crota = np.arccos(wcs.wcs.cd[0, 0]/cdelt1)
+        new_wcs = wcs.deepcopy()
+        new_wcs.wcs.ctype = wcs.wcs.ctype
+        new_wcs.wcs.crval = wcs.wcs.crval
+        new_wcs.wcs.crpix = wcs.wcs.crpix
+        new_wcs.wcs.pc = calculate_pc_matrix(crota, (cdelt1, cdelt2))
+        new_wcs.wcs.cdelt = (-cdelt1, cdelt2)
+        new_wcs.wcs.cunit = 'deg', 'deg'
+    else:
+        new_wcs = wcs.deepcopy()
+    return new_wcs
+
+
+def calculate_pc_matrix(crota: float, cdelt: (float, float)) -> np.ndarray:
     """
-    Returns a sparsified version of the input coordinates array,
-    where only the points that are at least `radius` distance
-    apart from each other are kept.
+    Calculate a PC matrix given CROTA and CDELT.
 
-    Parameters:
-    -----------
-    coords : np.ndarray
-        The input array of shape (n, 2) containing the coordinates of the points.
-    radius : float
-        The minimum distance between two points to be kept in the output array.
+    Parameters
+    ----------
+    crota : float
+        rotation angle from the WCS
+    cdelt : float
+        pixel size from the WCS
 
-    Returns:
-    --------
+    Returns
+    -------
     np.ndarray
-        The sparsified array of shape (m, 2),
-        where `m` is the number of points that are at least `radius` distance apart
-        from each other.
+        PC matrix
+
     """
-    _coords = coords.copy()
-    deleted_coords = np.zeros([], dtype=int)
-    sparse_coords = []
+    # TODO: make it use units!
+    return np.array(
+        [
+            [np.cos(crota), -np.sin(crota) * (cdelt[0] / cdelt[1])],
+            [np.sin(crota) * (cdelt[1] / cdelt[0]), np.cos(crota)],
+        ],
+    )
 
-    for i, s in enumerate(_coords):
-        if i not in deleted_coords:
-            distances = np.linalg.norm(_coords - s, axis=1)
-            idxs = np.flatnonzero(distances < radius)
-            sparse_coords.append(s)
-            deleted_coords = np.hstack([deleted_coords, idxs])
 
-    return np.array(sparse_coords)
+def extract_crota_from_wcs(wcs: WCS) -> tuple[float, float]:
+    """Extract CROTA from a WCS."""
+    delta_ratio = wcs.wcs.cdelt[1] / wcs.wcs.cdelt[0]
+    return np.arctan2(wcs.wcs.pc[1, 0]/delta_ratio, wcs.wcs.pc[0, 0]) * u.rad

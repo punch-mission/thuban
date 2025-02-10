@@ -6,55 +6,14 @@ import astropy.units as u
 import numpy as np
 import pandas as pd
 from astropy.stats import sigma_clipped_stats
-from astropy.wcs import WCS, utils
+from astropy.wcs import WCS
 from lmfit import Parameters, minimize
 from photutils.detection import IRAFStarFinder
 
 from thuban.catalog import (filter_for_visible_stars, find_catalog_in_image,
                             load_hipparcos_catalog)
 from thuban.error import ConvergenceWarning, RepeatedStarWarning
-from thuban.util import remove_pairless_points
-
-
-def convert_cd_matrix_to_pc_matrix(wcs):
-    if hasattr(wcs.wcs, 'cd'):
-        cdelt1, cdelt2 = utils.proj_plane_pixel_scales(wcs)
-        crota = np.arccos(wcs.wcs.cd[0, 0]/cdelt1)
-        new_wcs = WCS(naxis=2)
-        new_wcs.wcs.ctype = wcs.wcs.ctype
-        new_wcs.wcs.crval = wcs.wcs.crval
-        new_wcs.wcs.crpix = wcs.wcs.crpix
-        new_wcs.wcs.pc = calculate_pc_matrix(crota, (cdelt1, cdelt2))
-        new_wcs.wcs.cdelt = (-cdelt1, cdelt2)
-        new_wcs.wcs.cunit = 'deg', 'deg'
-        return new_wcs
-    else:  # noqa RET505
-        return wcs
-
-
-def calculate_pc_matrix(crota: float, cdelt: (float, float)) -> np.ndarray:
-    """
-    Calculate a PC matrix given CROTA and CDELT.
-
-    Parameters
-    ----------
-    crota : float
-        rotation angle from the WCS
-    cdelt : float
-        pixel size from the WCS
-
-    Returns
-    -------
-    np.ndarray
-        PC matrix
-
-    """
-    return np.array(
-        [
-            [np.cos(crota), -np.sin(crota) * (cdelt[0] / cdelt[1])],
-            [np.sin(crota) * (cdelt[1] / cdelt[0]), np.cos(crota)],
-        ],
-    )
+from thuban.util import calculate_pc_matrix, extract_crota_from_wcs
 
 
 def _residual(params: Parameters,
@@ -125,12 +84,6 @@ def refine_pointing_wrapper(image, guess_wcs, file_num, observed_coords=None, ca
                                                                     ra_tolerance=ra_tolerance,
                                                                     dec_tolerance=dec_tolerance, max_error=max_error)
     return new_wcs, observed_coords, solution, trial_num, file_num
-
-
-def extract_crota_from_wcs(wcs: WCS) -> tuple[float, float]:
-    """Extract CROTA from a WCS."""
-    delta_ratio = wcs.wcs.cdelt[1] / wcs.wcs.cdelt[0]
-    return np.arctan2(wcs.wcs.pc[1, 0]/delta_ratio, wcs.wcs.pc[0, 0]) * u.rad
 
 
 def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
@@ -233,26 +186,3 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
     best_index = np.argmin(chisqrs)
 
     return result_wcses[best_index], observed_coords, result_minimizations[best_index], trial_num
-
-
-def get_star_lists(catalog, refined_wcs, observed_coords, max_distance=20) -> (np.ndarray, np.ndarray, np.ndarray):
-    """Calculates the stars vi
-
-    Parameters
-    ----------
-    catalog
-    refined_wcs
-    observed_coords
-    max_distance
-
-    Returns
-    -------
-
-    """
-    refined_coords = find_catalog_in_image(catalog, refined_wcs, mode='all')
-    no_distortion = find_catalog_in_image(catalog, refined_wcs, mode='wcs')
-
-    refined_coords, observed_coords = remove_pairless_points(refined_coords, observed_coords, max_distance=max_distance)
-    observed_coords, no_distortion = remove_pairless_points(observed_coords, no_distortion, max_distance=max_distance)
-
-    return observed_coords.squeeze(), refined_coords.squeeze(), no_distortion.squeeze()

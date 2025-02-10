@@ -8,7 +8,6 @@ from thuban.catalog import (filter_for_visible_stars, find_catalog_in_image,
 
 
 def simulate_star_image(wcs, img_shape, fwhm,
-                        wcs_mode: str = 'all',
                         mag_set=0,
                         flux_set=500_000,
                         noise_mean: float | None = 25.0,
@@ -22,7 +21,7 @@ def simulate_star_image(wcs, img_shape, fwhm,
     stars = find_catalog_in_image(filtered_catalog,
                                   wcs,
                                   img_shape,
-                                  mode=wcs_mode)
+                                  mode="all")
     star_mags = stars['Vmag']
 
     sources = QTable()
@@ -34,7 +33,7 @@ def simulate_star_image(wcs, img_shape, fwhm,
     sources['theta'] = np.zeros(len(stars))
 
     model = Gaussian2D()
-    model_shape = (25, 25)
+    model_shape = (int(np.ceil(fwhm))*5, int(np.ceil(fwhm))*5)
 
     fake_image = make_model_image(img_shape, model, sources, model_shape=model_shape, x_name="x_mean", y_name="y_mean")
     if noise_mean is not None and noise_std is not None:  # we only add noise if it's specified

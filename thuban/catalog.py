@@ -19,11 +19,11 @@ _ROOT = os.path.abspath(os.path.dirname(__file__))
 HIPPARCOS_URL = "https://cdsarc.cds.unistra.fr/ftp/cats/I/239/hip_main.dat"
 
 
-def get_data(path):
+def get_data_path(path):
     return os.path.join(_ROOT, "data", path)
 
 
-def load_hipparcos_catalog(catalog_path: str = get_data("reduced_hip.csv")) -> pd.DataFrame:
+def load_hipparcos_catalog(catalog_path: str = get_data_path("reduced_hip.csv")) -> pd.DataFrame:
     """Load the Hipparcos catalog from the local, reduced version. This version only keeps necessary columns.
 
     Parameters

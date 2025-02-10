@@ -13,9 +13,9 @@ from tqdm import tqdm
 from thuban.catalog import (filter_for_visible_stars, find_catalog_in_image,
                             load_hipparcos_catalog)
 from thuban.distortion import compute_distortion, make_empty_distortion_model
-from thuban.pointing import (convert_cd_matrix_to_pc_matrix,
-                             refine_pointing_wrapper)
-from thuban.util import find_celestial_wcs, remove_pairless_points
+from thuban.pointing import refine_pointing_wrapper
+from thuban.util import (convert_cd_matrix_to_pc_matrix, find_celestial_wcs,
+                         remove_pairless_points)
 
 
 def _flatten_list(xss):

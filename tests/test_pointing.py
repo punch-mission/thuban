@@ -10,7 +10,7 @@ def test_pointing_solving():
     w = WCS(naxis=2)
     w.wcs.crpix = [shape[1] / 2 + .5, shape[0] / 2 + .5]
     w.wcs.cdelt = np.array([-0.05, 0.05])
-    w.wcs.crval = [54, 42]
+    w.wcs.crval = [54, 42.34]
     w.wcs.ctype = ["RA", "DEC"]
     w.wcs.cunit = "deg", "deg"
 
