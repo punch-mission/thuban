@@ -4,7 +4,7 @@ from typing import Callable
 import astropy.units as u
 import numpy as np
 import pandas as pd
-import sep_pjw as sep
+import sep
 from astropy.wcs import WCS, utils
 from lmfit import Parameters, minimize
 
