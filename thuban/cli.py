@@ -5,7 +5,7 @@ from pathlib import Path
 
 import click
 import numpy as np
-import sep_pjw as sep
+import sep
 from astropy.io import fits
 from astropy.wcs import WCS
 from tqdm import tqdm
