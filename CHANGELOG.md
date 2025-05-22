@@ -2,6 +2,10 @@
 
 [Also available through GitHub interface](https://github.com/punch-mission/thuban/releases)
 
+## Version 0.0.7: May 22, 2025
+
+- allow PV to vary in fitting
+
 ## Version 0.0.6: May 22, 2025
 
 * specify codecov path by @jmbhughes in https://github.com/punch-mission/thuban/pull/18
