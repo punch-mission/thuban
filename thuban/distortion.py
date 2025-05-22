@@ -131,7 +131,7 @@ def compute_distortion(
     img_shape: (int, int),
         catalog_positions: np.ndarray,
         found_positions: np.ndarray,
-        distortion_limit: float =20, num_bins: int =75, blur_sigma: float =4, med_filter_size: int=3
+        distortion_limit: float =20, num_bins: int =75, blur_sigma: float = 1, med_filter_size: int = 1
 ) -> (DistortionLookupTable, DistortionLookupTable):
     """ Given the derived catalog and actual star positions, determines the distortion
 
