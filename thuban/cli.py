@@ -39,8 +39,7 @@ def open_files(paths: [Path], byte_swap=True) -> (np.ndarray, [fits.Header]):
         with fits.open(filename) as hdul:
             if byte_swap:
                 raise NotImplementedError()
-            else:
-                data = hdul[data_hdu_num].data.astype(float)
+            data = hdul[data_hdu_num].data.astype(float)
             head = hdul[data_hdu_num].header
             all_wcses.append(WCS(head, hdul, key=celestial_wcs_key))
         all_data.append(data)
