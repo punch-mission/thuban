@@ -2,10 +2,11 @@
 
 [Also available through GitHub interface](https://github.com/punch-mission/thuban/releases)
 
-## Latest: unreleased
+## Version 0.0.6: May 22, 2025
 
 * specify codecov path by @jmbhughes in https://github.com/punch-mission/thuban/pull/18
 * Update issue templates by @jmbhughes in https://github.com/punch-mission/thuban/pull/19
+* Support more PUNCH features in https://github.com/punch-mission/thuban/pull/25
 
 ## Version 0.0.5: Nov 13, 2024
 
