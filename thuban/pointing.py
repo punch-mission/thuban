@@ -127,7 +127,8 @@ def refine_pointing_wrapper(image, guess_wcs, file_num, observed_coords=None, ca
                     dimmest_magnitude=dimmest_magnitude, method=method,
                                                                     ra_tolerance=ra_tolerance,
                                                                     dec_tolerance=dec_tolerance, max_error=max_error,
-                                                                    fix_crval=fix_crval, fix_cdelt=fix_cdelt, fix_crota=fix_crota, fix_pv=fix_pv)
+                                                                    fix_crval=fix_crval, fix_cdelt=fix_cdelt,
+                                                                    fix_crota=fix_crota, fix_pv=fix_pv)
     return new_wcs, observed_coords, solution, trial_num, file_num
 
 

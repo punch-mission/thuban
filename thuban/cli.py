@@ -117,7 +117,7 @@ def determine_pointing_and_distortion(directory, byte_swap=True,  num_stars=20,
                                 method='least_squares',
                                 fix_crota=False,
                                 fix_crval=False,
-                                fix_pv=iteration == 0 or iteration == iterations - 1,# or iteration == iterations - 1 or iteration % 2 == 0,
+                                fix_pv=iteration == 0 or iteration == iterations - 1,
                                 fix_cdelt=True or iteration == iterations - 1 or iteration % 2 == 1))
 
         print("\tprocessing")
