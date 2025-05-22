@@ -84,18 +84,15 @@ def _residual(params: Parameters,
     np.ndarray
         residual
     """
-    refined_wcs = WCS(naxis=2)
-    refined_wcs.wcs.ctype = guess_wcs.wcs.ctype
-    refined_wcs.wcs.cunit = guess_wcs.wcs.cunit
+    refined_wcs = guess_wcs.deepcopy()
     refined_wcs.wcs.cdelt = (params['cdelt1'].value, params['cdelt2'].value)
-    refined_wcs.wcs.crpix = guess_wcs.wcs.crpix
     refined_wcs.wcs.crval = (params["crval1"].value, params["crval2"].value)
     refined_wcs.wcs.pc = calculate_pc_matrix(params["crota"], (params['cdelt1'], params['cdelt2']))
     refined_wcs.cpdis1 = guess_wcs.cpdis1
     refined_wcs.cpdis2 = guess_wcs.cpdis2
     refined_wcs.wcs.set_pv([(2, 1, params['pv'].value)])
 
-    reduced_catalog = find_catalog_in_image(catalog, refined_wcs, image_shape=image_shape, mask=mask)
+    reduced_catalog = find_catalog_in_image(catalog, refined_wcs, image_shape=image_shape, mask=mask, mode='wcs')
     refined_coords = np.stack([reduced_catalog['x_pix'], reduced_catalog['y_pix']], axis=-1)
 
     image_bounds = (image_shape[0] - edge, image_shape[1] - edge)
@@ -189,12 +186,12 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
     params.add("cdelt2", value=guess_wcs.wcs.cdelt[1],
                min=max(guess_wcs.wcs.cdelt[1]-0.1, 0),
                max=guess_wcs.wcs.cdelt[1]+0.1, vary=not fix_cdelt)
-    if guess_wcs.wcs.get_pv():
-        pv = guess_wcs.wcs.get_pv()[0][-1]
-        print(pv)
-    else:
-        pv = 0.0
-    params.add("pv", value=pv, min=0.0, max=1.0, vary=not fix_pv)
+    # if guess_wcs.wcs.get_pv():
+    #     pv = guess_wcs.wcs.get_pv()[0][-1]
+    #     print(pv)
+    # else:
+    #     pv = 0.0
+    # params.add("pv", value=pv, min=0.0, max=1.0, vary=not fix_pv)
 
     # return guess_wcs, observed_coords, None, None
     # optimize
@@ -215,11 +212,8 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
                           ConvergenceWarning)
         else:
             # construct the result
-            result_wcs = WCS(naxis=2)
-            result_wcs.wcs.ctype = guess_wcs.wcs.ctype
-            result_wcs.wcs.cunit = guess_wcs.wcs.cunit
+            result_wcs = guess_wcs.deepcopy()
             result_wcs.wcs.cdelt = (out.params["cdelt1"].value, out.params["cdelt2"].value)
-            result_wcs.wcs.crpix = guess_wcs.wcs.crpix
             result_wcs.wcs.crval = (out.params["crval1"].value, out.params["crval2"].value)
             result_wcs.wcs.pc = calculate_pc_matrix(out.params["crota"], result_wcs.wcs.cdelt)
             result_wcs.cpdis1 = guess_wcs.cpdis1  # TODO: what if there is no known distortion
