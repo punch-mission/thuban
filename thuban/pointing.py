@@ -187,15 +187,13 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
     params.add("cdelt2", value=guess_wcs.wcs.cdelt[1],
                min=max(guess_wcs.wcs.cdelt[1]-0.1, 0),
                max=guess_wcs.wcs.cdelt[1]+0.1, vary=not fix_cdelt)
-    # if guess_wcs.wcs.get_pv():
-    #     pv = guess_wcs.wcs.get_pv()[0][-1]
-    #     print(pv)
-    # else:
-    #     pv = 0.0
-    # params.add("pv", value=pv, min=0.0, max=1.0, vary=not fix_pv)
+    if guess_wcs.wcs.get_pv():
+        pv = guess_wcs.wcs.get_pv()[0][-1]
+        print(pv)
+    else:
+        pv = 0.0
+    params.add("pv", value=pv, min=0.0, max=1.0, vary=not fix_pv)
 
-    # return guess_wcs, observed_coords, None, None
-    # optimize
     trial_num = 0
     result_wcses, result_minimizations = [], []
     while trial_num < max_trials:
