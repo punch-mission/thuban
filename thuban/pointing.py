@@ -88,9 +88,10 @@ def _residual(params: Parameters,
     refined_wcs.wcs.cdelt = (params['cdelt1'].value, params['cdelt2'].value)
     refined_wcs.wcs.crval = (params["crval1"].value, params["crval2"].value)
     refined_wcs.wcs.pc = calculate_pc_matrix(params["crota"], (params['cdelt1'], params['cdelt2']))
-    refined_wcs.cpdis1 = guess_wcs.cpdis1
-    refined_wcs.cpdis2 = guess_wcs.cpdis2
-    refined_wcs.wcs.set_pv([(2, 1, params['pv'].value)])
+    if refined_wcs.wcs.ctype[0][-3:] != "ZPN":
+        refined_wcs.cpdis1 = guess_wcs.cpdis1
+        refined_wcs.cpdis2 = guess_wcs.cpdis2
+        refined_wcs.wcs.set_pv([(2, 1, params['pv'].value)])
 
     reduced_catalog = find_catalog_in_image(catalog, refined_wcs, image_shape=image_shape, mask=mask, mode='wcs')
     refined_coords = np.stack([reduced_catalog['x_pix'], reduced_catalog['y_pix']], axis=-1)
@@ -215,9 +216,10 @@ def refine_pointing(image, guess_wcs, observed_coords=None, catalog=None,
             result_wcs.wcs.cdelt = (out.params["cdelt1"].value, out.params["cdelt2"].value)
             result_wcs.wcs.crval = (out.params["crval1"].value, out.params["crval2"].value)
             result_wcs.wcs.pc = calculate_pc_matrix(out.params["crota"], result_wcs.wcs.cdelt)
-            result_wcs.cpdis1 = guess_wcs.cpdis1  # TODO: what if there is no known distortion
-            result_wcs.cpdis2 = guess_wcs.cpdis2
-            result_wcs.wcs.set_pv([(2, 1, out.params['pv'].value)])
+            if result_wcs.wcs.ctype[0][-3:] != "ZPN":
+                result_wcs.cpdis1 = guess_wcs.cpdis1  # TODO: what if there is no known distortion
+                result_wcs.cpdis2 = guess_wcs.cpdis2
+                result_wcs.wcs.set_pv([(2, 1, out.params['pv'].value)])
         result_wcses.append(result_wcs)
         trial_num += 1
         if chisqr < chisqr_threshold:
