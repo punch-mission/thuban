@@ -2,6 +2,10 @@
 
 [Also available through GitHub interface](https://github.com/punch-mission/thuban/releases)
 
+## Version 0.0.8: June 4, 2025
+
+- Minor hotfix changes
+
 ## Version 0.0.7: May 22, 2025
 
 - allow PV to vary in fitting
