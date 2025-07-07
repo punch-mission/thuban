@@ -3,7 +3,7 @@
 High precision astrometric image solving from a guess.
 
 > [!WARNING]
-> This package may still have significant changes until v1. 
+> This package may still have significant changes until v1.
 
 
 ## To-do
